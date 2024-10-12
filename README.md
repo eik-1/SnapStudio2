@@ -1,2 +1,2 @@
-# HeadStuio - Get your Head Shot generated in Seconds.
+# HeadStudio - Get your Head Shot generated in Seconds.
 
