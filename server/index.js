@@ -4,6 +4,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
+import modelRoutes from "./routes/modelRoutes.js";
+
 const port = 3000;
 const app = express();
 
@@ -13,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Routes
+app.use("/models", modelRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
