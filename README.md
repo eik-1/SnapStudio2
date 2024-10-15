@@ -1,2 +1,1 @@
-# HeadStudio - Get your Head Shot generated in Seconds.
-
+# SnapStudio - Get your photos generated in Seconds.
