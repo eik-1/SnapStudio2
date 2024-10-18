@@ -4,7 +4,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-import modelRoutes from "./routes/modelRoutes.js";
+import modelRoutes from "./routes/replicateRoutes.js";
 
 const port = 3000;
 const app = express();
