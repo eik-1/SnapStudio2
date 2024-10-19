@@ -1,22 +1,27 @@
+import dotenv from "dotenv";
+
 import { replicate } from "../configs/replicateConfig.js";
+
+dotenv.config();
 
 export async function trainOstrisModel(req, res) {
   try {
     const { modelName, triggerWord } = req.body;
     const zipBuffer = req.file.buffer;
+    const username = process.env.USERNAME;
     const training = await replicate.trainings.create(
       "ostris",
       "flux-dev-lora-trainer",
       "29337367d801d93e9193dafd8fcfb5653eeacd841fe85db9118023fbb10ebed0",
       {
-        destination: "eik-1/snapshot",
+        destination: `eik-1/snapshot`,
         input: {
           steps: 1000,
           lora_rank: 16,
           optimizer: "adamw8bit",
           batch_size: 1,
           resolution: "512,768,1024",
-          autocaption: true,
+          autocaption: `A photo of ${triggerWord}`,
           input_images: zipBuffer,
           trigger_word: triggerWord,
           learning_rate: 0.0004,
@@ -30,9 +35,7 @@ export async function trainOstrisModel(req, res) {
     );
     console.log("Training started: ", training.status);
     console.log("Training URL: ", training.id);
-    res
-      .status(200)
-      .json({ message: "Training started", status: training.status });
+    res.status(200).json(training);
   } catch (err) {
     console.log("Couldn't train the model. Error: ", err);
     res
@@ -41,14 +44,48 @@ export async function trainOstrisModel(req, res) {
   }
 }
 
+/* OUTPUT: */
+/*{
+  "id": "zz4ibbonubfz7carwiefibzgga",
+  "version": "3ae0799123a1fe11f8c89fd99632f843fc5f7a761630160521c4253149754523",
+  "status": "starting",
+  "input": {
+    "text": "..."
+  },
+  "output": null,
+  "error": null,
+  "logs": null,
+  "started_at": null,
+  "created_at": "2023-03-28T21:47:58.566434Z",
+  "completed_at": null
+} */
+
+// async function getTrainingInfo() {
+//   const id = "cstwhwbg79rm20cjmpyvfq6w2m";
+//   console.log("Replicate API Token:", token);
+//   try {
+//     const response = await replicate.trainings.get(id, {
+//       headers: { Authorization: `Token ${token}` },
+//     });
+//     console.log(response);
+//   } catch (err) {
+//     console.error("Error fetching training info:", err);
+//   }
+// }
+
+// getTrainingInfo();
+
 export async function runUserModel(req, res) {
-  const prompt = req.prompt;
-  let model;
+  const { modelName, prompt } = req.body;
   const input = {
     /* Sample input */
     prompt: prompt,
   };
+
+  const username = process.env.USERNAME;
+
   try {
+    const model = await replicate.models.get(username, modelName);
     const output = replicate.run(model, { input });
     console.log("Running your model. Please wait!");
     return output;
