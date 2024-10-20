@@ -15,6 +15,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "form-data": "^4.0.1",
     "multer": "1.4.5-lts.1",
     "node-appwrite": "^14.1.0",
     "replicate": "^1.0.0"
