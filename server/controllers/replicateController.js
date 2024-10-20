@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import axios from "axios";
+import FormData from "form-data";
 
 import { replicate } from "../configs/replicateConfig.js";
 
@@ -9,6 +11,28 @@ export async function trainOstrisModel(req, res) {
     const { modelName, triggerWord } = req.body;
     const zipBuffer = req.file.buffer;
     const username = process.env.USERNAME;
+
+    /* Upload zip to Replicate's File API */
+    const formData = new FormData();
+    formData.append("content", zipBuffer, {
+      filename: "images.zip",
+      contentType: "application/zip",
+    });
+    const uploadResponse = await axios.post(
+      "https://api.replicate.com/v1/files",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}`,
+          ...formData.getHeaders(),
+        },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+      }
+    );
+    const fileUrl = uploadResponse.data.urls.get;
+    console.log(fileUrl);
+
     const training = await replicate.trainings.create(
       "ostris",
       "flux-dev-lora-trainer",
@@ -21,8 +45,8 @@ export async function trainOstrisModel(req, res) {
           optimizer: "adamw8bit",
           batch_size: 1,
           resolution: "512,768,1024",
-          autocaption: `A photo of ${triggerWord}`,
-          input_images: zipBuffer,
+          autocaption: true,
+          input_images: fileUrl,
           trigger_word: triggerWord,
           learning_rate: 0.0004,
           wandb_project: "flux_train_replicate",
@@ -34,7 +58,7 @@ export async function trainOstrisModel(req, res) {
       }
     );
     console.log("Training started: ", training.status);
-    console.log("Training URL: ", training.id);
+    console.log("Training ID: ", training.id);
     res.status(200).json(training);
   } catch (err) {
     console.log("Couldn't train the model. Error: ", err);
