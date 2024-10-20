@@ -6,9 +6,6 @@ function RootLayout() {
     return (
         <div className="flex flex-col min-h-screen relative">
             <Header />
-            <div className="abosolute h-[90dvh] w-max top-[10dvh] left-0">
-                <ModelTrainForm />
-            </div>
 
             <Outlet />
         </div>
