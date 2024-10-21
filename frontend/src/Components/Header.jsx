@@ -1,8 +1,8 @@
 function Header(){
   return (
-    <header className="flex max-h-[10dvh] justify-between items-center px-6 py-4 bg-white border-[1px]">
+    <header className="flex max-h-[10dvh] w-full justify-between items-center px-6 py-4 bg-white border-[1px] fixed top-0 z-50">
       <div className="flex items-center space-x-2">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500 text-2xl font-bold">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500 text-2xl font-bold font-heading">
           SnapStudio
         </span>
        
