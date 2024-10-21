@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import { Button } from "../components/ui/button";
+import { Button } from "./UI/Button";
 import { Plus, Minus } from 'lucide-react';
 
 function NumberInput({ 
