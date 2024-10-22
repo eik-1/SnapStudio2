@@ -1,9 +1,21 @@
-import React, { useState } from "react"
+import React from "react"
 import { useNavigate } from "react-router-dom"
+import { LogOut } from "lucide-react"
+import Avvvatars from "avvvatars-react"
+
+import { Button } from "./UI/Button"
+import { useUser } from "@/contexts/UserContext"
 
 function Header() {
     const navigate = useNavigate()
+    const { user, logout } = useUser()
+
     function handleLogin() {
+        navigate("/login")
+    }
+
+    async function handleLogout() {
+        await logout()
         navigate("/login")
     }
 
@@ -16,24 +28,19 @@ function Header() {
             </div>
 
             <div className="flex items-center space-x-3">
-                {/* <div>
-          <p className="text-gray-800 font-semibold">Joel Miller</p>
-          <p className="text-gray-500 text-sm">abc@xyz.com</p>
-        </div>
-
-        <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
-          <img
-            src="" 
-            alt="User Avatar"
-            className="w-full h-full object-cover"
-          />
-        </div> */}
-                <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    onClick={handleLogin}
-                >
-                    Sign In / Sign Up
-                </button>
+                {user ? (
+                    <>
+                        <Avvvatars value={user.name} />
+                        <span className="text-gray-600 font-semibold">
+                            {user.name}
+                        </span>
+                        <button onClick={handleLogout}>
+                            <LogOut />
+                        </button>
+                    </>
+                ) : (
+                    <Button onClick={handleLogin}>Sign In / Sign Up</Button>
+                )}
             </div>
         </header>
     )

@@ -1,9 +1,19 @@
 import React from "react"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import RootLayout from "./Pages/RootLayout"
 import LandingPage from "./Pages/LandingPage"
 import Home from "./Pages/Home"
 import Login from "./Pages/Login"
+import { useUser } from "./contexts/UserContext"
+
+function ProtectedRoute({ children }) {
+    const { user, loading } = useUser()
+
+    if (loading) return
+    if (!user) return <Navigate to="/login" replace />
+
+    return children
+}
 
 function App() {
     const router = createBrowserRouter([
@@ -13,7 +23,11 @@ function App() {
         },
         {
             path: "/home",
-            element: <RootLayout />,
+            element: (
+                <ProtectedRoute>
+                    <RootLayout />
+                </ProtectedRoute>
+            ),
             children: [
                 {
                     index: true,
@@ -27,7 +41,7 @@ function App() {
         },
     ])
 
-    return <RouterProvider router={router}>{router}</RouterProvider>
+    return <RouterProvider router={router} />
 }
 
 export default App
