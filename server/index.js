@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import modelRoutes from "./routes/replicateRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
 
 const port = 3000;
 const app = express();

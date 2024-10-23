@@ -3,14 +3,14 @@ import axios from "axios";
 import FormData from "form-data";
 
 import { replicate } from "../configs/replicateConfig.js";
+import { createModel, getModel, updateModel } from "./databaseController.js";
 
 dotenv.config();
 
 export async function trainOstrisModel(req, res) {
   try {
-    const { modelName, triggerWord } = req.body;
+    const { modelName, userId, triggerWord } = req.body;
     const zipBuffer = req.file.buffer;
-    const username = process.env.USERNAME;
 
     /* Upload zip to Replicate's File API */
     const formData = new FormData();
@@ -59,6 +59,14 @@ export async function trainOstrisModel(req, res) {
     );
     console.log("Training started: ", training.status);
     console.log("Training ID: ", training.id);
+    await createModel(
+      userId,
+      modelName,
+      triggerWord,
+      training.status,
+      training.id,
+      training.version
+    );
     res.status(200).json(training);
   } catch (err) {
     console.log("Couldn't train the model. Error: ", err);
@@ -84,20 +92,17 @@ export async function trainOstrisModel(req, res) {
   "completed_at": null
 } */
 
-// async function getTrainingInfo() {
-//   const id = "cstwhwbg79rm20cjmpyvfq6w2m";
-//   console.log("Replicate API Token:", token);
-//   try {
-//     const response = await replicate.trainings.get(id, {
-//       headers: { Authorization: `Token ${token}` },
-//     });
-//     console.log(response);
-//   } catch (err) {
-//     console.error("Error fetching training info:", err);
-//   }
-// }
-
-// getTrainingInfo();
+export async function getTrainingStatus(req, res) {
+  const { userId } = req.body;
+  const model = await getModel(userId);
+  const modelVersion = model.documents[0].model_version;
+  try {
+    const response = await replicate.trainings.get(modelVersion);
+    res.status(200).json(response);
+  } catch (err) {
+    console.log("Couldn't get the training status. Error: ", err);
+  }
+}
 
 export async function runUserModel(req, res) {
   const { modelName, prompt } = req.body;
