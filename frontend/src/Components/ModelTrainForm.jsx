@@ -3,14 +3,17 @@ import JSZip from "jszip"
 import axios from "axios"
 import { Upload } from "lucide-react"
 import { Button } from "./UI/Button"
+import { useUser } from "@/contexts/UserContext"
 
-function ModelTrainForm() {
+function ModelTrainForm({trainingState, setTrainingState}) {
     const [modelName, setModelName] = useState("")
     const [isDragging, setIsDragging] = useState(false)
     const [triggerWord, setTriggerWord] = useState("MOD")
-    const [selectedFiles, setSelectedFiles] = useState([])
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const { user } = useUser()
 
     const fileInputRef = useRef(null)
+    let intervalId = null;
 
     function handleFileChange(e) {
         const files = Array.from(e.target.files)
@@ -45,6 +48,7 @@ function ModelTrainForm() {
         formData.append("file", zipBlob, "images.zip")
         formData.append("modelName", modelName)
         formData.append("triggerWord", triggerWord)
+        formData.append("userId", user.$id)
 
         try {
             const response = await axios.post(
@@ -56,6 +60,15 @@ function ModelTrainForm() {
                     },
                 },
             )
+            if(response.data.status === "started")
+            {
+                setTrainingState("started");
+                intervalId = setInterval(getTrainingStatus, 15000);
+            }
+            else if(response.data.status === "failed")
+            {
+                setTrainingState("failed");
+            }
             console.log("Training started: ", response.data)
         } catch (err) {
             console.error("Error starting training: ", err)
@@ -65,13 +78,31 @@ function ModelTrainForm() {
             fileInputRef.current.value = ""
         }
     }
+    async function getTrainingStatus() {
+      const response= await axios.post("http://localhost:3000/models/trainingStatus",{
+        userId:user.$id
+      })
+        if(response.data.status === "succedeed")
+        {
+            clearInterval(intervalId);
+            setTrainingState("succedeed");
+        }
+        else if(response.data.status === "failed")
+        {
+            clearInterval(intervalId);
+            setTrainingState("failed");
+        }
+    }
+
 
     const removeFile = (index) => {
         setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
     }
-
-    return (
-        <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
+    let content=null;
+    if(trainingState === "idle")
+    {
+        content = <>
+                    <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
             <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
                 <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
                     <h1 className="font-sans font-semibold tracking-tighter text-xl text-gray-800">
@@ -187,6 +218,46 @@ function ModelTrainForm() {
                 </Button>
             </div>
         </div>
+        </>
+    }
+    else if(trainingState === "started")
+    {
+        content = 
+        <>
+        <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
+        <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
+            <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
+                <h1 className="font-sans font-semibold tracking-tighter text-xl text-gray-800">
+                    Training Started
+                </h1>
+                <p className="text-xs font-regular tracking-tight text-gray-500">
+                    Your model is being trained. This might take a while.
+                </p>
+            </div>
+        </div>
+        </div>
+        </>
+    }
+    else if(trainingState === "succedeed")
+    {
+        content= <>
+        <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">  
+        <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
+            <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
+                <h1 className="font-sans font-semibold tracking-tighter text-xl text-gray-800">
+                    Training Succedeed
+                </h1>
+                <p className="text-xs font-regular tracking-tight text-gray-500">
+                    Your model has been trained successfully.
+                </p>
+            </div>
+            </div>
+            </div>
+        </>
+    }
+
+    return (
+        content
     )
 }
 
