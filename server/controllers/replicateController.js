@@ -2,7 +2,12 @@ import dotenv from "dotenv";
 import axios from "axios";
 import FormData from "form-data";
 import { replicate } from "../configs/replicateConfig.js";
-import { createModel, getModel, updateModel } from "./databaseController.js";
+import {
+  createModel,
+  getModel,
+  updateModel,
+  deleteModel,
+} from "./databaseController.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 dotenv.config();
@@ -67,10 +72,10 @@ export async function trainOstrisModel(req, res) {
       training.id,
       training.version
     );
-    res.status(200).json(training);
+    return res.status(200).json(training);
   } catch (err) {
     console.log("Couldn't train the model. Error: ", err);
-    res
+    return res
       .status(500)
       .json({ error: "Couldn't train the model", details: err.message });
   }
@@ -92,35 +97,53 @@ export async function trainOstrisModel(req, res) {
   "completed_at": null
 } */
 
-export async function getTrainingStatus(req, res) 
-{
+export async function getTrainingStatus(req, res) {
   const { userId } = req.body;
   try {
     const model = await getModel(userId);
     const modelId = model.documents[0].model_id;
     const response = await replicate.trainings.get(modelId);
-    res.status(200).json(new ApiResponse(200, "Training status", {status: response.status}));
-  } catch (err) 
-  {
-    res.status(500).json(new ApiResponse(500, "Error getting training status", {error: err.message}));
+    if (response.status === "failed") {
+      await deleteModel(userId);
+    }
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, "Training status", { status: response.status })
+      );
+  } catch (err) {
+    return res.status(500).json(
+      new ApiResponse(500, "Error getting training status", {
+        error: err.message,
+      })
+    );
   }
 }
 
 export async function runUserModel(req, res) {
-  const { modelName, prompt } = req.body;
-  const input = {
-
-    prompt: prompt,
-  };
-
-  const username = process.env.USERNAME;
-
+  const { userId, prompt } = req.body;
   try {
-    const model = await replicate.models.get(username, modelName);
-    const output = replicate.run(model, { input });
+    const model = await getModel(userId);
+    const modelVersion = model.documents[0].model_version;
+    const output = await replicate.run(`eik-1/snapshot:${modelVersion}`, {
+      input: {
+        model: "dev",
+        prompt: prompt,
+        aspect_ratio: "1:1",
+        output_format: "webp",
+        output_quality: 90,
+      },
+    });
     console.log("Running your model. Please wait!");
-    return output;
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Model run successfully", { output: output }));
   } catch (err) {
     console.log("Couldn't run the model. Error: ", err);
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(500, "Couldn't run the model", { error: err.message })
+      );
   }
 }
