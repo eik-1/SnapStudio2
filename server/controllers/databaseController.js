@@ -46,4 +46,34 @@ export async function getModel(userId) {
   }
 }
 
-export async function updateModel() {}
+export async function updateModel(userId, status) {
+  try {
+    const model = await getModel(userId);
+    const modelId = model.documents[0].$id;
+    const response = await databases.updateDocument(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_MODELS_COLLECTION_ID,
+      modelId,
+      {
+        status: status,
+      }
+    );
+    return response;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function deleteModel(userId) {
+  try {
+    const model = await getModel(userId);
+    const modelId = model.documents[0].$id;
+    await databases.deleteDocument(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_MODELS_COLLECTION_ID,
+      modelId
+    );
+  } catch (err) {
+    throw err;
+  }
+}
