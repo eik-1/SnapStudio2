@@ -3,8 +3,9 @@ import NumberInput from './NumberInput';
 import {Button} from './UI/Button';
 import Pen from './PenIcon';
 import TextStarIcon from './TextStarIcon';
-export default function PromptForm() {
+export default function PromptForm({trainingState}) {
   const [promptData, setPromptData] = useState({ prompt: "", images: 1 });
+  const [hover, setHover]=useState(false);
 
   return (
     <div className="w-2/5 ml-4 h-max font-sans">
@@ -15,13 +16,14 @@ export default function PromptForm() {
         </h1>
       </div>
       
-      <div className="mt-4 w-full">
+      <div className={`mt-4 w-full ${trainingState==="succeeded"?"":"opacity-80"}`} >
         <form className="space-y-4" onSubmit={(e)=>{e.preventDefault()}}>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <textarea 
               id="promptInput"
               placeholder="Enter your prompt"
-              className="w-full h-24 px-2 text-sm focus:outline-none resize-none placeholder:text-xs"
+              className="w-full h-24 px-2 text-sm focus:outline-none resize-none placeholder:text-xs disabled:bg-white"
+              disabled={trainingState==="succeeded"?false:true}
             />
             <div className='h-max w-max flex items-center justify-center gap-2 '>
                   <TextStarIcon/>
@@ -29,6 +31,7 @@ export default function PromptForm() {
                     type="button"
                     onClick={() => {}} 
                     className="text-[0.675rem] text-gray-400"
+                    disabled={trainingState==="succeeded"?false:true}
                   >
                     Enhance Prompt
                   </button>
@@ -48,12 +51,15 @@ export default function PromptForm() {
               max={5}
               step={1}
               initialValue={1}
+              disabled={trainingState==="succeeded"?false:true}
               onChange={(value) => setPromptData({...promptData, images: value})}
             />
           </div>
         </form>
         <div className='w-full h-max flex justify-center mt-8'>
-                <Button className="w-4/5 bg-gradient-to-r from-[#ee0979] via-[#ff6a00] to-[#ee0979] ">Generate ✨</Button>
+                <Button className="w-4/5 bg-gradient-to-r from-[#ee0979] via-[#ff6a00] to-[#ee0979] disabled:text-white"
+                  disabled={trainingState==="succeeded"?false:true}
+                >Generate ✨</Button>
         </div>
         
       </div>

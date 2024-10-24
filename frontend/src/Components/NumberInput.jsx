@@ -7,6 +7,7 @@ function NumberInput({
   max = 5, 
   step = 1, 
   initialValue = 1,
+  disabled,
   onChange
 }) {
   const [value, setValue] = useState(initialValue);
@@ -44,7 +45,7 @@ function NumberInput({
     type="button"
   className="block h-max w-max p-0 bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent hover:opacity-70 active:text-black disabled:opacity-50"
   onClick={decrement}
-  disabled={value <= min}
+  disabled={value <= min || disabled}
 >
   <Minus className="h-4 w-4 text-black active:text-black" />
 </button>
@@ -58,12 +59,13 @@ function NumberInput({
         max={max}
         step={step}
         className="w-12 h-8 text-center mx-0 py-1 rounded-md shadow-sm focus:outline-none focus:ring-2  focus:border-transparent"
+        disabled={disabled}
       />
       <button
   type="button"
   className="block  h-max w-max p-0 mx-0 bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent hover:opacity-70 active:text-black disabled:opacity-50"
   onClick={increment}
-  disabled={value >= max}
+  disabled={value >= max || disabled}
 >
   <Plus className="h-4 w-4 text-black active:text-black" />
 </button>
