@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import axios from "axios";
 import FormData from "form-data";
-
 import { replicate } from "../configs/replicateConfig.js";
 import { createModel, getModel, updateModel } from "./databaseController.js";
+import ApiResponse from "../utils/ApiResponse.js";
 
 dotenv.config();
 
@@ -92,22 +92,24 @@ export async function trainOstrisModel(req, res) {
   "completed_at": null
 } */
 
-export async function getTrainingStatus(req, res) {
+export async function getTrainingStatus(req, res) 
+{
   const { userId } = req.body;
-  const model = await getModel(userId);
-  const modelVersion = model.documents[0].model_version;
   try {
-    const response = await replicate.trainings.get(modelVersion);
-    res.status(200).json(response);
-  } catch (err) {
-    console.log("Couldn't get the training status. Error: ", err);
+    const model = await getModel(userId);
+    const modelId = model.documents[0].model_id;
+    const response = await replicate.trainings.get(modelId);
+    res.status(200).json(new ApiResponse(200, "Training status", {status: response.status}));
+  } catch (err) 
+  {
+    res.status(500).json(new ApiResponse(500, "Error getting training status", {error: err.message}));
   }
 }
 
 export async function runUserModel(req, res) {
   const { modelName, prompt } = req.body;
   const input = {
-    /* Sample input */
+
     prompt: prompt,
   };
 
