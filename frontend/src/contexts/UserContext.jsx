@@ -1,5 +1,7 @@
-import React, { useState, createContext, useEffect, useContext } from "react"
-import { Client, Account } from "appwrite"
+import { useState, createContext, useEffect, useContext, useMemo } from "react"
+import { Account } from "appwrite"
+import {client} from "@/configs/ClientConfig"
+
 
 const UserContext = createContext()
 
@@ -7,12 +9,9 @@ function UserProvider({ children }) {
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    
 
-    const client = new Client()
-        .setEndpoint("https://cloud.appwrite.io/v1")
-        .setProject(import.meta.env.VITE_APPWRITE_PROJECTID)
-
-    const account = new Account(client)
+    const account = useMemo(()=>new Account(client),[])
 
     useEffect(() => {
         async function fetchUser() {
