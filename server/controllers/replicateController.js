@@ -102,21 +102,31 @@ export async function getTrainingStatus(req, res) {
   const { userId } = req.body;
   try {
     const model = await getModel(userId);
-    const modelId = model.documents[0].model_id
+    if (!model || !model.documents || model.documents.length === 0) {
+      return res.status(404).json(
+        new ApiResponse(404, "Model not found", {
+          error: "The requested model is not found.",
+        })
+      );
+    }
+
+    const modelId = model.documents[0].model_id;
     const response = await replicate.trainings.get(modelId);
     if (response.status === "failed") {
       await deleteModel(userId);
     }
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(200, "Training status", { trainingStatus: response.status })
-      );
+    return res.status(200).json(
+      new ApiResponse(200, "Training status", {
+        trainingStatus: response.status,
+      })
+    );
   } catch (err) {
-
-    if(err.response.status===404)
-    {
-        return res.status(404).json(new ApiResponse(404, "Model not found", {error:"the Requested model is not found"}));
+    if (err.response?.status === 404) {
+      return res.status(404).json(
+        new ApiResponse(404, "Model not found", {
+          error: "The requested model is not found.",
+        })
+      );
     }
     return res.status(500).json(
       new ApiResponse(500, "Error getting training status", {
