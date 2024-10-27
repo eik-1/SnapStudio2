@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import JSZip from "jszip"
 import axios from "axios"
 import { Upload } from "lucide-react"
@@ -11,9 +11,53 @@ function ModelTrainForm({trainingState, setTrainingState}) {
     const [triggerWord, setTriggerWord] = useState("MOD")
     const [selectedFiles, setSelectedFiles] = useState([]);
     const { user } = useUser()
+    let intervalId = null;
+    const getTrainingStatus=useCallback(async function getTrainingStatus() 
+    {
+        try
+        {
+            const response= await axios.post("http://localhost:3000/models/status",{
+                userId:user.$id
+              });
+              if(response.data.status === 200)
+                {
+                    clearInterval(intervalId);
+                    setTrainingState(response.data.data.trainingStatus);
+                }
+
+        }
+        catch(err)
+        {
+            console.log(err);    
+            if(err.response?.data.status === 404)
+            {
+                clearInterval(intervalId);
+                setTrainingState("idle");
+            }
+            else
+            {
+                setTrainingState("error");
+            }
+        }
+        
+    
+        
+          
+      },[user.$id, setTrainingState, intervalId])
+  
+    useEffect(()=>{
+            async function checkTrainingstatus()
+            {
+                
+                    await getTrainingStatus();
+                    console.log("Checking training status");
+                    
+            }
+            checkTrainingstatus();
+    }, [getTrainingStatus, setTrainingState])
 
     const fileInputRef = useRef(null)
-    let intervalId = null;
+ 
 
     function handleFileChange(e) {
         const files = Array.from(e.target.files)
@@ -71,26 +115,12 @@ function ModelTrainForm({trainingState, setTrainingState}) {
             }
             console.log("Training started: ", response.data)
         } catch (err) {
+            setTrainingState("failed");
             console.error("Error starting training: ", err)
         }
         setSelectedFiles([])
         if (fileInputRef.current) {
             fileInputRef.current.value = ""
-        }
-    }
-    async function getTrainingStatus() {
-      const response= await axios.post("http://localhost:3000/models/trainingStatus",{
-        userId:user.$id
-      })
-        if(response.data.status === "succedeed")
-        {
-            clearInterval(intervalId);
-            setTrainingState("succedeed");
-        }
-        else if(response.data.status === "failed")
-        {
-            clearInterval(intervalId);
-            setTrainingState("failed");
         }
     }
 
@@ -235,26 +265,96 @@ function ModelTrainForm({trainingState, setTrainingState}) {
                 </p>
             </div>
         </div>
+        <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
+                <Button
+                    type="button"
+                    onClick={()=>setTrainingState("idle")}
+                    className="w-2/3 mx-auto"
+                >
+                    Train New Model
+                </Button>
+            </div>
         </div>
         </>
     }
-    else if(trainingState === "succedeed")
+    else if(trainingState === "succeeded")
     {
         content= <>
         <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">  
         <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
             <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
-                <h1 className="font-sans font-semibold tracking-tighter text-xl text-gray-800">
-                    Training Succedeed
+                <h1 className="font-sans font-semibold tracking-tighter text-xl text-green-600">
+                    Training succeeded
                 </h1>
                 <p className="text-xs font-regular tracking-tight text-gray-500">
-                    Your model has been trained successfully.
+                    Your model has been trained successfully.<br/> Input Prompt to generate images
                 </p>
             </div>
+            </div>
+            <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
+                <Button
+                    type="button"
+                    onClick={()=>setTrainingState("idle")}
+                    className="w-2/3 mx-auto"
+                >
+                    Train New Model
+                </Button>
             </div>
             </div>
         </>
     }
+    else if(trainingState === "failed")
+        {
+            content= <>
+            <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">  
+            <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
+                <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
+                    <h1 className="font-sans font-semibold tracking-tighter text-xl text-red-600">
+                        Training Failed!
+                    </h1>
+                    <p className="text-xs font-regular tracking-tight text-gray-500">
+                        Your model training has failed. Please try again.
+                    </p>
+                </div>
+                </div>
+                <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
+                <Button
+                    type="button"
+                    onClick={()=>setTrainingState("idle")}
+                    className="w-2/3 mx-auto"
+                >
+                    Train New Model
+                </Button>
+            </div>
+                </div>
+            </>
+        }
+        else 
+        {
+            content= <>
+            <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">  
+            <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
+                <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
+                    <h1 className="font-sans font-semibold tracking-tighter text-xl text-red-600">
+                        Error
+                    </h1>
+                    <p className="text-xs font-regular tracking-tight text-gray-500">
+                        Can't fetch training status. Please try again.
+                    </p>
+                </div>
+                </div>
+                <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
+                <Button
+                    type="button"
+                    onClick={()=>getTrainingStatus()}
+                    className="w-2/3 mx-auto"
+                >
+                    Check Status Again
+                </Button>
+            </div>
+                </div>
+            </>
+        }
 
     return (
         content
