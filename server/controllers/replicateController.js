@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import axios from "axios";
 import FormData from "form-data";
+import { writeFile } from "node:fs/promises";
+
 import { replicate } from "../configs/replicateConfig.js";
 import {
   createModel,
@@ -137,20 +139,23 @@ export async function getTrainingStatus(req, res) {
 }
 
 export async function runUserModel(req, res) {
-  const { userId, prompt } = req.body;
+  const { userId, prompt, numberOfImages } = req.body;
   try {
     const model = await getModel(userId);
     const modelVersion = model.documents[0].model_version;
-    const output = await replicate.run(`eik-1/snapshot:${modelVersion}`, {
+    const [output] = await replicate.run(`eik-1/snapshot:${modelVersion}`, {
       input: {
         model: "dev",
         prompt: prompt,
         aspect_ratio: "1:1",
         output_format: "webp",
         output_quality: 90,
+        num_outputs: numberOfImages,
       },
     });
-    console.log("Running your model. Please wait!");
+    console.log(output);
+    await writeFile("./output.png", output);
+    console.log("Image saved as output.png");
     return res
       .status(200)
       .json(new ApiResponse(200, "Model run successfully", { output: output }));
