@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import axios from "axios";
 import FormData from "form-data";
 import { writeFile } from "node:fs/promises";
+import fs from 'fs';
 
 import { replicate } from "../configs/replicateConfig.js";
 import {
@@ -155,16 +156,16 @@ export async function runUserModel(req, res) {
         output_quality: 90,
         num_outputs: numberOfImages,
       },
-      wait: { type: "poll" },
+
     });
-    console.log(output);
-    console.log(output.output);
-    await writeFile("./output.png", output); 
-    console.log("Image saved as output.png");
+    const outputURL=[];
+    output.forEach((fileOutput)=>{
+      outputURL.push(fileOutput.url().href);
+    })
   
     return res
       .status(200)
-      .json(new ApiResponse(200, "Model run successfully", { output: output.output }));
+      .json(new ApiResponse(200, "Model run successfully", { output: outputURL }));
   } catch (err) {
     console.log("Couldn't run the model. Error: ", err);
     return res

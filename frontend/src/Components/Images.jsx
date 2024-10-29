@@ -9,6 +9,8 @@ function ImageGrid({
     
     const [selectedId, setSelectedId] = useState(null);
     let content=null;
+    console.log(generationStatus);
+    console.log(imageUrls);
     if(generationStatus.status==="idle")
     {
         content=(<>
