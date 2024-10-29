@@ -4,7 +4,7 @@ import { Plus, Minus } from 'lucide-react';
 
 function NumberInput({ 
   min = 0, 
-  max = 5, 
+  max = 4, 
   step = 1, 
   initialValue = 1,
   disabled,

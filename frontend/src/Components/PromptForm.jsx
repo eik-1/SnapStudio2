@@ -18,7 +18,7 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
             return
         }
 
-        
+        setGeneratedImageUrls([]);
         setGenerationStatus((prev)=>({status:"loading", message:"Generating images..."}))
 
         console.log('sending Request...');
@@ -103,13 +103,13 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                                 Number of Output Images
                             </label>
                             <p className="text-[0.675rem] text-gray-500 mb-2">
-                                {"(minimum: 1, maximum: 5)"}
+                                {"(minimum: 1, maximum: 4)"}
                             </p>
                         </div>
 
                         <NumberInput
                             min={1}
-                            max={5}
+                            max={4}
                             step={1}
                             initialValue={1}
                             disabled={
