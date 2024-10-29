@@ -140,10 +140,13 @@ export async function getTrainingStatus(req, res) {
 
 export async function runUserModel(req, res) {
   const { userId, prompt, numberOfImages } = req.body;
+  console.log(userId, prompt, numberOfImages);
   try {
+    
     const model = await getModel(userId);
     const modelVersion = model.documents[0].model_version;
-    const [output] = await replicate.run(`eik-1/snapshot:${modelVersion}`, {
+    console.log("Generating images...");
+    const output = await replicate.run(`eik-1/snapshot:${modelVersion}`, {
       input: {
         model: "dev",
         prompt: prompt,
@@ -152,13 +155,16 @@ export async function runUserModel(req, res) {
         output_quality: 90,
         num_outputs: numberOfImages,
       },
+      wait: { type: "poll" },
     });
     console.log(output);
-    await writeFile("./output.png", output);
+    console.log(output.output);
+    await writeFile("./output.png", output); 
     console.log("Image saved as output.png");
+  
     return res
       .status(200)
-      .json(new ApiResponse(200, "Model run successfully", { output: output }));
+      .json(new ApiResponse(200, "Model run successfully", { output: output.output }));
   } catch (err) {
     console.log("Couldn't run the model. Error: ", err);
     return res
