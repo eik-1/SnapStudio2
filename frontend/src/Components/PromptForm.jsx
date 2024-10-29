@@ -3,10 +3,57 @@ import NumberInput from "./NumberInput"
 import { Button } from "./UI/Button"
 import Pen from "./PenIcon"
 import TextStarIcon from "./TextStarIcon"
-export default function PromptForm({ trainingState }) {
+import axios from "axios"
+import { useUser } from "../contexts/UserContext"
+export default function PromptForm({ trainingState, generationStatus, setGenerationStatus, setGeneratedImageUrls }) {
     const [promptData, setPromptData] = useState({ prompt: "", images: 1 })
-    const [hover, setHover] = useState(false)
+    const {user}= useUser();
+  
+    async function handleSubmit(e) {
+        console.log(promptData.prompt.trim())
+        e.preventDefault()
+        
+        if (!promptData.prompt.trim()) {
+            setGenerationStatus((prev)=>({...prev, status:"error", message:"Prompt cannot be empty"}))
+            return
+        }
 
+        
+        setGenerationStatus((prev)=>({status:"loading", message:"Generating images..."}))
+
+        console.log('sending Request...');
+
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL}/models/run`,
+                {
+                    userId:user.$id,
+                    prompt: promptData.prompt.trim(),
+                    numberOfImages: promptData.images
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                }
+            );
+
+            const images = response.data.data.output;
+            console.log(typeof images);
+            console.log(images);
+
+            setGeneratedImageUrls((prev)=>[...prev, ...images]);
+            setGenerationStatus((prev)=>({...prev, status:"generated", message:"Images generated successfully"}))
+           
+            
+            
+        } catch (err) {
+            setGenerationStatus((prev)=>({...prev, status:"error", message:'Error generating images'}))
+        }
+    }
+    
+    
+    
     return (
         <div className="w-2/5 ml-4 h-max font-sans">
             <div className="w-max h-max flex justify-between items-center  mt-4 gap-2">
@@ -21,9 +68,7 @@ export default function PromptForm({ trainingState }) {
             >
                 <form
                     className="space-y-4"
-                    onSubmit={(e) => {
-                        e.preventDefault()
-                    }}
+                    onSubmit={handleSubmit}
                 >
                     <div className="bg-white rounded-xl p-4 shadow-sm">
                         <textarea
@@ -33,6 +78,7 @@ export default function PromptForm({ trainingState }) {
                             disabled={
                                 trainingState === "succeeded" ? false : true
                             }
+                            onChange={(e) =>{setPromptData({ ...promptData, prompt: e.target.value })}}
                         />
                         <div className="h-max w-max flex items-center justify-center gap-2 ">
                             <TextStarIcon />
@@ -77,10 +123,13 @@ export default function PromptForm({ trainingState }) {
                 </form>
                 <div className="w-full h-max flex justify-center mt-8">
                     <Button
-                        className="w-4/5 bg-gradient-to-r from-[#ee0979] via-[#ff6a00] to-[#ee0979] disabled:text-white"
-                        disabled={trainingState === "succeeded" ? false : true}
+                        className="w-4/5 bg-gradient-to-r from-pink-600 via-orange-600 to-purple-600 disabled:text-white"
+                        disabled={trainingState !== "succeeded" || generationStatus==="loading"}
+                        type="button"
+                        onClick={handleSubmit}
                     >
-                        Generate ✨
+                        {generationStatus==='loading'?"Generating..." :"Generate ✨"}
+                        
                     </Button>
                 </div>
             </div>

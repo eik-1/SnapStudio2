@@ -3,7 +3,7 @@ import ImageGrid from "./images";
 import {useState} from "react";
 function ImageGenerateSection({trainingState})
 {
-    //placeholders for testing
+    
    
    
     const [generationStatus, setGenerationStatus] = useState({

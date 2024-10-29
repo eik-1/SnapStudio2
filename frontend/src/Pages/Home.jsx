@@ -1,6 +1,6 @@
 import {useState} from "react"
 import ModelTrainForm from "../Components/ModelTrainForm"
-import PromptForm from "../Components/PromptForm"
+import ImageGenerateSection from "@/Components/ImageGenerateSection";
 
 function Home() {
     const [trainingState, setTrainingState] = useState("idle"); 
@@ -11,8 +11,8 @@ function Home() {
                 setTrainingState={setTrainingState}
                 />
             </div>
-            <main className="h-[80dvh] w-[66dvw] ml-[32dvw] mt-[12dvh]  bg-gray-100 rounded-xl">
-                <PromptForm  trainingState={trainingState}/>
+            <main className="h-max w-max">
+               <ImageGenerateSection trainingState={trainingState}/>
             </main>
         </div>
     )

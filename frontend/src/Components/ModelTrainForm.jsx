@@ -342,7 +342,7 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
                     </div>
                     <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
                         <Button
-                            type="button"
+                            type="submit"
                             onClick={() => getTrainingStatus()}
                             className="w-2/3 mx-auto"
                         >
