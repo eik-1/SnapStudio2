@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import axios from "axios";
 import FormData from "form-data";
 import { writeFile } from "node:fs/promises";
-import fs from 'fs';
+import fs from "fs";
 
 import { replicate } from "../configs/replicateConfig.js";
 import {
@@ -76,7 +76,11 @@ export async function trainOstrisModel(req, res) {
       training.id,
       training.version
     );
-    return res.status(200).json(new ApiResponse(200, "Model training started", {status: training.status}));
+    return res.status(200).json(
+      new ApiResponse(200, "Model training started", {
+        status: training.status,
+      })
+    );
   } catch (err) {
     console.log("Couldn't train the model. Error: ", err);
     return res
@@ -84,22 +88,6 @@ export async function trainOstrisModel(req, res) {
       .json({ error: "Couldn't train the model", details: err.message });
   }
 }
-
-/* OUTPUT: */
-/*{
-  "id": "zz4ibbonubfz7carwiefibzgga",
-  "version": "3ae0799123a1fe11f8c89fd99632f843fc5f7a761630160521c4253149754523",
-  "status": "starting",
-  "input": {
-    "text": "..."
-  },
-  "output": null,
-  "error": null,
-  "logs": null,
-  "started_at": null,
-  "created_at": "2023-03-28T21:47:58.566434Z",
-  "completed_at": null
-} */
 
 export async function getTrainingStatus(req, res) {
   const { userId } = req.body;
@@ -143,7 +131,6 @@ export async function runUserModel(req, res) {
   const { userId, prompt, numberOfImages } = req.body;
   console.log(userId, prompt, numberOfImages);
   try {
-    
     const model = await getModel(userId);
     const modelVersion = model.documents[0].model_version;
     console.log("Generating images...");
@@ -152,20 +139,21 @@ export async function runUserModel(req, res) {
         model: "dev",
         prompt: prompt,
         aspect_ratio: "1:1",
-        output_format: "webp",
+        output_format: "png",
         output_quality: 90,
         num_outputs: numberOfImages,
       },
-
     });
-    const outputURL=[];
-    output.forEach((fileOutput)=>{
+    const outputURL = [];
+    output.forEach((fileOutput) => {
       outputURL.push(fileOutput.url().href);
-    })
-  
+    });
+
     return res
       .status(200)
-      .json(new ApiResponse(200, "Model run successfully", { output: outputURL }));
+      .json(
+        new ApiResponse(200, "Model run successfully", { output: outputURL })
+      );
   } catch (err) {
     console.log("Couldn't run the model. Error: ", err);
     return res

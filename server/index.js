@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import modelRoutes from "./routes/replicateRoutes.js";
+import databaseRoutes from "./routes/databaseRoutes.js";
 
 const port = 3000;
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //Routes
 app.use("/models", modelRoutes);
+app.use("/database", databaseRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
