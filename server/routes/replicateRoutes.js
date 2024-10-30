@@ -13,6 +13,6 @@ const router = express.Router();
 router.post("/train", upload.single("file"), trainOstrisModel);
 router.post("/status", getTrainingStatus);
 router.post("/run", runUserModel);
-router.get("/get-trigger-word", getTriggerWord);
+router.post("/get-trigger-word", getTriggerWord);
 
 export default router;

@@ -5,6 +5,8 @@ import LandingPage from "./Pages/LandingPage"
 import Home from "./Pages/Home"
 import Login from "./Components/Login"
 import { useUser } from "./contexts/UserContext"
+import { ImageProvider } from "./contexts/ImageContext"
+import SavedImageCollection from "./Pages/ImageCollection"
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useUser()
@@ -26,7 +28,10 @@ function App() {
             path: "/home",
             element: (
                 <ProtectedRoute>
-                    <RootLayout />
+                    <ImageProvider>
+
+                        <RootLayout />
+                    </ImageProvider>
                 </ProtectedRoute>
             ),
             children: [
@@ -34,6 +39,10 @@ function App() {
                     index: true,
                     element: <Home />,
                 },
+                {
+                    path:"/home/mycollection",
+                    element:<SavedImageCollection/>
+                }
             ],
         },
         {

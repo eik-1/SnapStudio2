@@ -169,7 +169,7 @@ export async function runUserModel(req, res) {
         model: "dev",
         prompt: prompt,
         aspect_ratio: "1:1",
-        output_format: "png",
+        output_format: "webp",
         output_quality: 90,
         num_outputs: numberOfImages,
       },

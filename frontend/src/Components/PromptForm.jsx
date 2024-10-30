@@ -1,23 +1,56 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronRight } from "lucide-react"
-import axios from "axios"
+
 
 import NumberInput from "./NumberInput"
 import { Button } from "./UI/Button"
 import Pen from "./PenIcon"
-import axios from "axios"
 import { useUser } from "../contexts/UserContext"
 import PromptDescription from "./PromptDescription"
+import axios from "axios"
+import { useImage } from "@/contexts/ImageContext"
 
-export default function PromptForm({
-    trainingState,
-    generationStatus,
-    setGenerationStatus,
-    setGeneratedImageUrls,
-}) {
+export default function PromptForm() {
+
+
     const [promptData, setPromptData] = useState({ prompt: "", images: 1 })
     const [isOpen, setIsOpen] = useState(false)
+    const [triggerWord, setTriggerWord] = useState(null)
     const { user } = useUser()
+    const { generationStatus, setGenerationStatus, setGeneratedImageUrls, trainingState } = useImage()
+    useEffect(()=>{
+
+        if(trainingState==="succeeded")
+        {
+            
+                async function fetchTriggerWord()
+                {
+                    try
+                    {
+
+                    
+                    const response=await axios.post(`${import.meta.env.VITE_API_URL}/models/get-trigger-word`,{
+
+                        userId:user.$id
+                    })
+                    console.log(response.data.data)
+                    setTriggerWord(response.data.data.triggerWord)
+                    }
+                    catch(err)
+                    {
+                        console.log(err)
+                    }
+            
+                   
+                }
+             
+            fetchTriggerWord();
+         }
+         else
+         {
+                setTriggerWord(null)
+         }
+    },[trainingState, user.$id])
 
     async function handleSubmit(e) {
         console.log(promptData.prompt.trim())
@@ -107,7 +140,7 @@ export default function PromptForm({
                     <ChevronRight className="block text-sky-800" size={14} />
                 </div>
                 <div className="font-sans text-gray-500 font-medium text-xs mt-4">
-                    <p>Your Trigger Word:</p>
+                    <p>{`Your Trigger Word: ${triggerWord?triggerWord:""}`}</p>
                 </div>
                 <div
                     className={`mt-2 w-full z-10 relative ${trainingState === "succeeded" ? "" : "opacity-80 blur-[10px]"}`}

@@ -6,24 +6,25 @@ import { Upload } from "lucide-react"
 import { Button } from "./UI/Button"
 import { useUser } from "@/contexts/UserContext"
 import { FadeLoader } from "react-spinners"
-
-function ModelTrainForm({ trainingState, setTrainingState }) {
+import { useImage } from "@/contexts/ImageContext"
+function ModelTrainForm() {
     const [modelName, setModelName] = useState("")
     const [isDragging, setIsDragging] = useState(false)
     const [triggerWord, setTriggerWord] = useState("MOD")
     const [selectedFiles, setSelectedFiles] = useState([])
     const { user } = useUser()
+    const {trainingState, setTrainingState} = useImage()
     let intervalId = null
     const data = {
         started: {
             heading: "Training Started",
-            message: "Your model is being trained. This might take a while.",
+            message: "Your model is being trained. This might take 15-20 minutes.",
             button: "Train New Model",
             handler: () => {setTrainingState("idle")}
         },
         succeeded: {
             heading: "Training Succeeded",
-            message: "Your model has been trained successfully.",
+            message: "Your model has been trained successfully. You can now enter prompt and generate images. Don't forget to check the prompt writing guide for best results.",
             button: "Train New Model",
             handler: ()=> {setTrainingState("idle")
          
@@ -308,7 +309,7 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
                             >
                                 {data[trainingState].heading}
                             </h1>
-                            <p className="text-xs font-regular tracking-tight text-gray-500">
+                            <p className="text-sm font-regular tracking-tight text-gray-500">
                                 {data[trainingState].message}
                             </p>
                         </div>

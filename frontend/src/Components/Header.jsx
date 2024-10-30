@@ -6,6 +6,7 @@ import Avvvatars from "avvvatars-react"
 import { Button } from "./UI/Button"
 import { useUser } from "@/contexts/UserContext"
 import { useToast } from "@/hooks/use-toast"
+import {Link} from "react-router-dom"
 
 function Header() {
     const navigate = useNavigate()
@@ -33,6 +34,21 @@ function Header() {
                     SnapStudio
                 </span>
             </div>
+            <nav>
+                <ul className="flex items-center space-x-4 gap-12 font-sans">
+                    <li>
+                        <Link to="/home" className="text-gray-600 font-semibold">
+                            Home
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/home/mycollection" className="text-gray-600 font-semibold">
+                            My Collection
+                        </Link>
+                    </li>
+                  
+                </ul>
+            </nav>
 
             <div className="flex items-center space-x-3">
                 {user ? (

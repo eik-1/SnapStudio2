@@ -162,6 +162,7 @@ export async function getImages(req, res) {
     response.documents.forEach((image) => {
       imageUrls.push(image.image_url);
     });
+    console.log("Images fetched: ", imageUrls);
     return res
       .status(200)
       .json(new ApiResponse(200, "Images fetched", { imageUrls }));
