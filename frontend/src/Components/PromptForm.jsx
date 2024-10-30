@@ -61,7 +61,10 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
         <>
         <PromptDescription isOpen={isOpen} handleClose={()=>{setIsOpen(false)}}/>
         
-        <div className="w-2/5 ml-4 h-max font-sans">
+        <div className="w-2/5 ml-4 h-max font-sans relative">
+             {(trainingState!=='succeeded') &&   <div className={`h-full w-full z-30 absolute top-40 flex justify-center items-start  `}>
+                <p className="mt-16 text-sm font-medium font-sans text-gray-500 text-center">You need to Train the model with your images before entering the prompt</p>
+                </div>}
             <div className="w-max h-max flex justify-between items-center  mt-4 gap-2">
                 <Pen />
                 <h1 className="font-sans text-xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
@@ -81,8 +84,10 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                 <p>Your Trigger Word:</p>
             </div>
             <div
-                className={`mt-2 w-full ${trainingState === "succeeded" ? "" : "opacity-80 blur-[2px]"}`}
+                className={`mt-2 w-full z-10 relative ${trainingState === "succeeded" ? "" : "opacity-80 blur-[10px]"}`}
             >
+                
+                
                 <form
                     className="space-y-4"
                     onSubmit={handleSubmit}
