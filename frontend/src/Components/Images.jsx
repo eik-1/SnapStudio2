@@ -1,6 +1,6 @@
 import {motion, AnimatePresence} from 'framer-motion';
 import {useState} from 'react';
-import { Image, AlertTriangleIcon } from 'lucide-react';
+import { Image, AlertTriangleIcon, Download } from 'lucide-react';
 import { FadeLoader } from 'react-spinners';
 function ImageGrid({ 
   imageUrls,
@@ -8,6 +8,7 @@ function ImageGrid({
 }) {
     
     const [selectedId, setSelectedId] = useState(null);
+    const [isHovering, setIsHovering] = useState(false);
     let content=null;
     console.log(generationStatus);
     console.log(imageUrls);
@@ -44,8 +45,10 @@ function ImageGrid({
                 <motion.div 
                   key={index}
                   layoutId={`container-${index}`}
-                  className="aspect-square relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer"
+                  className="aspect-square relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer relative"
                   onClick={() => setSelectedId(index)}
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}
                 >
                   <motion.img
                     layoutId={`image-${index}`}
@@ -54,6 +57,14 @@ function ImageGrid({
                     className="absolute inset-0 w-full h-full object-cover"
                     loading="lazy"
                   />
+                  {isHovering &&<a className='block absolute h-max w-max top-1 right-1 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 '
+                   href={url}
+                   download={"image"+index+".png"}
+                   onClick={(e)=>e.stopPropagation()}
+
+                  >
+                    <Download color="white" size={16}/>
+                  </a>}
                 </motion.div>
               ))}
             </div>
@@ -102,6 +113,16 @@ function ImageGrid({
                       <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                   </motion.button>
+                  <a className='block absolute h-max w-max top-4 right-16 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 '
+                   href={imageUrls[selectedId]}
+                   download={"image"+selectedId+".png"}
+                   onClick={(e)=>e.stopPropagation()}
+
+                  >
+                    <Download color="white" size={24}/>
+                  </a>
+                  
+
                 </motion.div>
               </motion.div>
             )}

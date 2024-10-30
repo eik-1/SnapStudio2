@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 import { motion } from 'framer-motion';
+import { useUser } from '@/contexts/UserContext';
 import GridPattern from '@/Components/UI/grid-pattern';
 import Marquee from '@/Components/UI/marquee';
 import Login from '../Components/Login';
@@ -28,8 +30,25 @@ const imageGrid = [
   image7
 ];
 
-const LandingPage = () => {
+function LandingPage(){
  
+  
+  const navigate = useNavigate();
+  const {user} =useUser();
+
+  useEffect(() => {
+    if(user)
+    {
+      navigate("/home");
+    }
+    
+  },);
+
+
+
+  
+  
+  
   return (
     <div className="flex  min-h-screen bg-white font-sans">
       <GridPattern className={'min-h-screen w-1/2 [mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]'}/>
@@ -52,10 +71,10 @@ const LandingPage = () => {
           </motion.h1>
 
           <motion.p 
-            className="text-lg text-center text-gray-600 px-12 font-medium"
+            className="text-center text-gray-600 px-12 font-medium"
             variants={fadeIn}
           >
-            Describe personality, appearance, and generate your image characters with just a prompt!
+           Get custom images of you, any way you envision. With just a few photos of yourself and a simple prompt, you can create stunning, customized images that bring your ideas to life..
           </motion.p>
 
           <motion.div 

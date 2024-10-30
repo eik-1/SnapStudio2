@@ -53,7 +53,7 @@ function UserProvider({ children }) {
 
     async function logout() {
         try {
-            await localStorage.removeItem("userData")
+            localStorage.removeItem("userData")
             await account.deleteSession("current")
             
             setUser(null)
