@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import RootLayout from "./Pages/RootLayout"
 import LandingPage from "./Pages/LandingPage"
 import Home from "./Pages/Home"
-import Login from "./Pages/Login"
+import Login from "./Components/Login"
 import { useUser } from "./contexts/UserContext"
 
 function ProtectedRoute({ children }) {
@@ -11,7 +11,7 @@ function ProtectedRoute({ children }) {
 
     if (loading) return
     console.log(user)
-    if (!user) return <Navigate to="/login" replace />
+    if (!user) return <Navigate to="/" replace />
 
     return children
 }

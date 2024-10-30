@@ -14,7 +14,7 @@ function ImageGrid({
     if(generationStatus.status==="idle")
     {
         content=(<>
-            <div className="w-full h-[36rem] sm:h-full sm:w-3/6 p-4 bg-gray-50 rounded-xl flex flex-col justify-center items-center">
+            <div className="w-full h-[36rem] sm:h-full sm:w-3/6 p-4 bg-transparent  rounded-xl flex flex-col justify-center items-center">
                 <Image
                  size={64}
                  color='lightgray'

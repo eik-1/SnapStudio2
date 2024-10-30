@@ -5,25 +5,31 @@ import Avvvatars from "avvvatars-react"
 
 import { Button } from "./UI/Button"
 import { useUser } from "@/contexts/UserContext"
+import { useToast } from "@/hooks/use-toast"
 
 function Header() {
     const navigate = useNavigate()
     const { user, logout } = useUser()
+    const { toast } = useToast()
     console.log("user from header", user)
 
     function handleLogin() {
-        navigate("/login")
+        navigate("/")
     }
 
     async function handleLogout() {
         await logout()
-        navigate("/login")
+        toast({
+            description: "Logged out successfully",
+        })
+        navigate("/")
+
     }
 
     return (
         <header className="flex max-h-[10dvh] w-full justify-between items-center px-6 py-4 bg-white border-[1px] fixed top-0 z-50">
             <div className="flex items-center space-x-2">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-blue-500 text-2xl font-bold font-heading">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-700 text-2xl font-bold font-sans">
                     SnapStudio
                 </span>
             </div>
@@ -36,7 +42,7 @@ function Header() {
                             {user.name}
                         </span>
                         <button onClick={handleLogout}>
-                            <LogOut />
+                            <LogOut size={20} />
                         </button>
                     </>
                 ) : (

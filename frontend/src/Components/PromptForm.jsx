@@ -81,7 +81,7 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                 <p>Your Trigger Word:</p>
             </div>
             <div
-                className={`mt-2 w-full ${trainingState === "succeeded" ? "" : "opacity-80"}`}
+                className={`mt-2 w-full ${trainingState === "succeeded" ? "" : "opacity-80 blur-[2px]"}`}
             >
                 <form
                     className="space-y-4"

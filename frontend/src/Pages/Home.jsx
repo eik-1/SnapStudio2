@@ -5,8 +5,8 @@ import ImageGenerateSection from "@/Components/ImageGenerateSection";
 function Home() {
     const [trainingState, setTrainingState] = useState("loading"); 
     return (
-        <div className="h-max w-max flex relative">
-            <div className="fixed h-[90dvh] w-[30dvw] top-[10dvh] left-0">
+        <div className="h-max w-max flex justify-between gap-3 relative">
+            <div className="h-[90dvh] w-[30dvw] mt-[10dvh]">
                 <ModelTrainForm  trainingState={trainingState} 
                 setTrainingState={setTrainingState}
                 />
