@@ -126,10 +126,10 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
                     },
                 },
             )
-            if (response.data.status === "started") {
+            if (response.data.data.status === "starting") {
                 setTrainingState("started")
                 intervalId = setInterval(getTrainingStatus, 15000)
-            } else if (response.data.status === "failed") {
+            } else if (response.data.data.status === "failed") {
                 setTrainingState("failed")
             }
             console.log("Training started: ", response.data)
@@ -303,7 +303,7 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
                         <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
                             <h1
                                 className={cn(
-                                    `font-sans font-semibold tracking-tighter text-xl text-gray-800 ${trainingState === "error" && 'text-red-500'} ${trainingState === "succeeded" && "text-green-600"}`,
+                                    `font-sans font-semibold tracking-tighter text-xl text-gray-800 ${trainingState === "error" && 'text-red-500'} ${trainingState === "succeeded" && 'text-emerald-600' }`,
                                 )}
                             >
                                 {data[trainingState].heading}

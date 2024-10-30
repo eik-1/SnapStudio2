@@ -76,7 +76,7 @@ export async function trainOstrisModel(req, res) {
       training.id,
       training.version
     );
-    return res.status(200).json(training);
+    return res.status(200).json(new ApiResponse(200, "Model training started", {status: training.status}));
   } catch (err) {
     console.log("Couldn't train the model. Error: ", err);
     return res

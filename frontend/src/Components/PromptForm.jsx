@@ -5,8 +5,11 @@ import Pen from "./PenIcon"
 import TextStarIcon from "./TextStarIcon"
 import axios from "axios"
 import { useUser } from "../contexts/UserContext"
+import { ChevronRight } from "lucide-react"
+import PromptDescription from "./PromptDescription"
 export default function PromptForm({ trainingState, generationStatus, setGenerationStatus, setGeneratedImageUrls }) {
     const [promptData, setPromptData] = useState({ prompt: "", images: 1 })
+    const[isOpen, setIsOpen]=useState(false);
     const {user}= useUser();
   
     async function handleSubmit(e) {
@@ -55,6 +58,9 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
     
     
     return (
+        <>
+        <PromptDescription isOpen={isOpen} handleClose={()=>{setIsOpen(false)}}/>
+        
         <div className="w-2/5 ml-4 h-max font-sans">
             <div className="w-max h-max flex justify-between items-center  mt-4 gap-2">
                 <Pen />
@@ -62,9 +68,20 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                     Describe how you want to be seen.
                 </h1>
             </div>
-
+            <div className="flex flex-row justify-center items-center h-max w-max mt-4 mb-1 font-sans cursor-pointer hover:border-b-[0.8px] hover: border-emerald-800"
+            onClick={()=>{setIsOpen(true)}}
+            >
+            
+                <p className="text-xs my-0 py-0  bg-gradient-to-r from-emerald-800 to-sky-800 bg-clip-text text-transparent  font-medium ">
+                    Learn how to write a good prompt for better results
+                </p>
+                <ChevronRight className="block text-sky-800" size={14} />
+            </div>
+            <div className="font-sans text-gray-500 font-medium text-xs mt-4">
+                <p>Your Trigger Word:</p>
+            </div>
             <div
-                className={`mt-4 w-full ${trainingState === "succeeded" ? "" : "opacity-80"}`}
+                className={`mt-2 w-full ${trainingState === "succeeded" ? "" : "opacity-80"}`}
             >
                 <form
                     className="space-y-4"
@@ -74,13 +91,13 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                         <textarea
                             id="promptInput"
                             placeholder="Enter your prompt"
-                            className="w-full h-24 px-2 text-sm focus:outline-none resize-none placeholder:text-xs disabled:bg-white"
+                            className="w-full h-32 px-2 text-sm focus:outline-none resize-none placeholder:text-xs disabled:bg-white"
                             disabled={
                                 trainingState === "succeeded" ? false : true
                             }
                             onChange={(e) =>{setPromptData({ ...promptData, prompt: e.target.value })}}
                         />
-                        <div className="h-max w-max flex items-center justify-center gap-2 ">
+                       { /*<div className="h-max w-max flex items-center justify-center gap-2 ">
                             <TextStarIcon />
                             <button
                                 type="button"
@@ -92,7 +109,7 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                             >
                                 Enhance Prompt
                             </button>
-                        </div>
+                        </div>*/}
                     </div>
                     <div className="flex justify-between h-max w-full mt-2 gap-4 ">
                         <div>
@@ -134,5 +151,6 @@ export default function PromptForm({ trainingState, generationStatus, setGenerat
                 </div>
             </div>
         </div>
+        </>
     )
 }
