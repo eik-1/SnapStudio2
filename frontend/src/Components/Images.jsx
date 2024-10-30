@@ -14,7 +14,7 @@ function ImageGrid({
     if(generationStatus.status==="idle")
     {
         content=(<>
-            <div className="w-3/6 mx-auto p-4 bg-gray-50 rounded-xl flex flex-col justify-center items-center">
+            <div className="w-full h-[36rem] sm:h-full sm:w-3/6 p-4 bg-gray-50 rounded-xl flex flex-col justify-center items-center">
                 <Image
                  size={64}
                  color='lightgray'
@@ -24,7 +24,7 @@ function ImageGrid({
     }
     else if(generationStatus.status==="loading")
     {
-        content=(<><div className="w-3/6 mx-auto p-4 bg-gray-50 rounded-xl flex justify-center items-center">
+        content=(<><div className="w-3/6 p-4 bg-gray-50 rounded-xl flex justify-center items-center">
                 <FadeLoader
                 loading={true}
                 height={15}
@@ -38,7 +38,7 @@ function ImageGrid({
     else if(generationStatus.status==="generated")
     {
         content=(<>
-            <div className="w-3/6 mx-auto p-4 bg-gray-50 rounded-xl">
+            <div className="w-full sm:w-3/6 p-4 bg-gray-50 rounded-xl">
             <div className="grid grid-cols-2 gap-4">
               {imageUrls.map((url, index) => (
                 <motion.div 

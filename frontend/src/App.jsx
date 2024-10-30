@@ -10,6 +10,7 @@ function ProtectedRoute({ children }) {
     const { user, loading } = useUser()
 
     if (loading) return
+    console.log(user)
     if (!user) return <Navigate to="/login" replace />
 
     return children

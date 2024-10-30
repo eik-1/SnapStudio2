@@ -14,7 +14,7 @@ function ImageGenerateSection({trainingState})
    
 
     return(
-        <section className="h-[80dvh] w-[66dvw] ml-[32dvw] mt-[12dvh] p-2 flex flex-col sm:flex-row justify-between  bg-gray-100 rounded-xl" trainingState={trainingState}>
+        <section className="h-max sm:h-[85dvh] w-[66dvw] ml-[32dvw] mt-[12dvh] p-2 flex flex-col sm:flex-row justify-between gap-4 bg-gray-100 rounded-xl" trainingState={trainingState}>
             <PromptForm trainingState={trainingState} generationStatusStatus={generationStatus} setGenerationStatus={setGenerationStatus} setGeneratedImageUrls={setGeneratedImageUrls}/>
             <ImageGrid imageUrls={generatedImageUrls} generationStatus={generationStatus}/>
         </section>

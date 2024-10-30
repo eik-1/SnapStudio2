@@ -9,6 +9,7 @@ import { useUser } from "@/contexts/UserContext"
 function Header() {
     const navigate = useNavigate()
     const { user, logout } = useUser()
+    console.log("user from header", user)
 
     function handleLogin() {
         navigate("/login")

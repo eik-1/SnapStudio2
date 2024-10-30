@@ -3,20 +3,22 @@ import { Account } from "appwrite"
 import {client} from "@/configs/ClientConfig"
 
 
+
 const UserContext = createContext()
 
 function UserProvider({ children }) {
-    const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState(localStorage.getItem("userData")?JSON.parse(localStorage.getItem("userData")):null)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     
 
     const account = useMemo(()=>new Account(client),[])
 
-    useEffect(() => {
+   /* useEffect(() => {
         async function fetchUser() {
             try {
                 const response = await account.get()
+                console.log("response from get user", response)
                 setUser(response)
             } catch (error) {
                 setError(error)
@@ -25,15 +27,23 @@ function UserProvider({ children }) {
             }
         }
         fetchUser()
-    }, [account])
+    },[account])*/
 
     async function login(email, password) {
         try {
-            const response = await account.createEmailPasswordSession(
+             await account.createEmailPasswordSession(
                 email,
                 password,
             )
-            setUser(response)
+            const response = await account.get()
+            const userData={
+                email:response.email,
+                name:response.name,
+                $id:response.$id
+            }
+            localStorage.setItem("userData", JSON.stringify(userData))
+            console.log("response from login after account get", response)
+            setUser(userData)
             return response
         } catch (err) {
             setError(err)
@@ -43,7 +53,9 @@ function UserProvider({ children }) {
 
     async function logout() {
         try {
+            await localStorage.removeItem("userData")
             await account.deleteSession("current")
+            
             setUser(null)
         } catch (err) {
             setError(err)

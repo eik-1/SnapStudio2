@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import JSZip from "jszip"
 import axios from "axios"
+import { cn } from "@/lib/utils"
 import { Upload } from "lucide-react"
 import { Button } from "./UI/Button"
 import { useUser } from "@/contexts/UserContext"
+import { FadeLoader } from "react-spinners"
 
 function ModelTrainForm({ trainingState, setTrainingState }) {
     const [modelName, setModelName] = useState("")
@@ -12,6 +14,36 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
     const [selectedFiles, setSelectedFiles] = useState([])
     const { user } = useUser()
     let intervalId = null
+    const data = {
+        started: {
+            heading: "Training Started",
+            message: "Your model is being trained. This might take a while.",
+            button: "Train New Model",
+            handler: () => {setTrainingState("idle")}
+        },
+        succeeded: {
+            heading: "Training Succeeded",
+            message: "Your model has been trained successfully.",
+            button: "Train New Model",
+            handler: ()=> {setTrainingState("idle")
+         
+            }
+        },
+        failed: {
+            heading: "Training Failed",
+            message: "Your model training has failed. Please try again.",
+            button: "Train Model Again",
+            handler: () => {setTrainingState("idle")},
+        },
+        error: {
+            heading: "Error",
+            message: "Can't fetch training status. Please try again.",
+            button: "Check Status Again",
+            handler: () => {
+                setTrainingState("loading")
+                getTrainingStatus()}
+        },
+    }
     const getTrainingStatus = useCallback(
         async function getTrainingStatus() {
             try {
@@ -31,6 +63,7 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
                     clearInterval(intervalId)
                     setTrainingState("idle")
                 } else {
+                    
                     setTrainingState("error")
                 }
             }
@@ -114,7 +147,24 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
         setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
     }
     let content = null
-    if (trainingState === "idle") {
+    if (trainingState === "loading") {
+        content = (
+            <>
+                <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
+                    <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden flex items-center justify-center">
+                        <FadeLoader
+                            loading={true}
+                            height={15}
+                            width={5}
+                            radius={10}
+                            color="#ff4600"
+                        />
+                    </div>
+                    <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]"></div>
+                </div>
+            </>
+        )
+    } else if (trainingState === "idle") {
         content = (
             <>
                 <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
@@ -245,114 +295,37 @@ function ModelTrainForm({ trainingState, setTrainingState }) {
                 </div>
             </>
         )
-    } else if (trainingState === "started") {
+    } else
         content = (
             <>
                 <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
                     <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
                         <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
-                            <h1 className="font-sans font-semibold tracking-tighter text-xl text-gray-800">
-                                Training Started
+                            <h1
+                                className={cn(
+                                    `font-sans font-semibold tracking-tighter text-xl text-gray-800 ${trainingState === "error" && 'text-red-500'} ${trainingState === "succeeded" && "text-green-600"}`,
+                                )}
+                            >
+                                {data[trainingState].heading}
                             </h1>
                             <p className="text-xs font-regular tracking-tight text-gray-500">
-                                Your model is being trained. This might take a
-                                while.
+                                {data[trainingState].message}
                             </p>
                         </div>
                     </div>
                     <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
                         <Button
                             type="button"
-                            onClick={() => setTrainingState("idle")}
+                            onClick={data[trainingState].handler}
                             className="w-2/3 mx-auto"
+                            disabled={trainingState === "started"}
                         >
-                            Train New Model
+                            {data[trainingState].button}
                         </Button>
                     </div>
                 </div>
             </>
         )
-    } else if (trainingState === "succeeded") {
-        content = (
-            <>
-                <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
-                    <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
-                        <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
-                            <h1 className="font-sans font-semibold tracking-tighter text-xl text-green-600">
-                                Training succeeded
-                            </h1>
-                            <p className="text-xs font-regular tracking-tight text-gray-500">
-                                Your model has been trained successfully.
-                                <br /> Input Prompt to generate images
-                            </p>
-                        </div>
-                    </div>
-                    <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
-                        <Button
-                            type="button"
-                            onClick={() => setTrainingState("idle")}
-                            className="w-2/3 mx-auto"
-                        >
-                            Train New Model
-                        </Button>
-                    </div>
-                </div>
-            </>
-        )
-    } else if (trainingState === "failed") {
-        content = (
-            <>
-                <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
-                    <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
-                        <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
-                            <h1 className="font-sans font-semibold tracking-tighter text-xl text-red-600">
-                                Training Failed!
-                            </h1>
-                            <p className="text-xs font-regular tracking-tight text-gray-500">
-                                Your model training has failed. Please try
-                                again.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
-                        <Button
-                            type="button"
-                            onClick={() => setTrainingState("idle")}
-                            className="w-2/3 mx-auto"
-                        >
-                            Train New Model
-                        </Button>
-                    </div>
-                </div>
-            </>
-        )
-    } else {
-        content = (
-            <>
-                <div className="max-w-sm h-[90dvh] mx-auto  bg-white border-r-[1px] relative">
-                    <div className="h-[90%] max-w-sm m-0 px-4 py-4 overflow-y-scroll oveflow-x-hidden">
-                        <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
-                            <h1 className="font-sans font-semibold tracking-tighter text-xl text-red-600">
-                                Error
-                            </h1>
-                            <p className="text-xs font-regular tracking-tight text-gray-500">
-                                Can't fetch training status. Please try again.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
-                        <Button
-                            type="submit"
-                            onClick={() => getTrainingStatus()}
-                            className="w-2/3 mx-auto"
-                        >
-                            Check Status Again
-                        </Button>
-                    </div>
-                </div>
-            </>
-        )
-    }
 
     return content
 }
