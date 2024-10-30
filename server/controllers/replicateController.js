@@ -127,6 +127,36 @@ export async function getTrainingStatus(req, res) {
   }
 }
 
+export async function getTriggerWord(req, res) {
+  const { userId } = req.body;
+  try {
+    const model = await getModel(userId);
+    if (!model || !model.documents || model.documents.length === 0) {
+      return res.status(404).json(
+        new ApiResponse(404, "Model not found", {
+          error: "The requested model is not found.",
+        })
+      );
+    }
+    const triggerWord = model.documents[0].trigger_word;
+    const modelName = model.documents[0].model_name;
+    return res.status(200).json(
+      new ApiResponse(200, "Trigger word", {
+        triggerWord,
+        modelName,
+      })
+    );
+  } catch (err) {
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(500, "Error getting trigger word", {
+          error: err.message,
+        })
+      );
+  }
+}
+
 export async function runUserModel(req, res) {
   const { userId, prompt, numberOfImages } = req.body;
   console.log(userId, prompt, numberOfImages);
