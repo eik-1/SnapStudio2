@@ -9,12 +9,18 @@ import databaseRoutes from "./routes/databaseRoutes.js";
 
 const port = process.env.PORT || 3000;
 const app = express();
-
+const corsOptions={
+origin:["https://snap-studio.vercel.app", "http://snap-studio.vercel.app"],
+  methods:["GET", "POST", "DELETE", "PUT"],
+  credentials:true,
+  allowedHeaders:[ 'Content-Type',
+    'Authorization',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Methods',
+    'Access-Control-Allow-Headers',]
+}
 //Middlewares
-app.use(cors({
-origin:"https://snap-studio.vercel.app"
-  
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
