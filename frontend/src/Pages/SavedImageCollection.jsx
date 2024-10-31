@@ -25,6 +25,7 @@ function SavedImageCollection()
             }
             catch(err)
             {
+                setIsLoading(false);
                 console.log(err)
             }
         }
@@ -33,17 +34,33 @@ function SavedImageCollection()
     },[user.$id])
     return(
         <>
-        <div className="min-h-screen w-screen mt-[12dvh] flex-col bg-transparent items-center">
+        <div className="min-h-screen w-screen mt-[12dvh] flex-col  items-center">
             <h1 className="w-full text-center font-sans font-bold text-3xl mb-10 pt-12 tracking-tight text-gray-800 ">Gallery</h1>
             {
                 isLoading && <>
                     <div className="h-max w-full flex justify-center">
-                            <FadeLoader/>
+                            <FadeLoader
+                                speedMultiplier={1.5}
+                                color={"#ff4600"}
+                                loading={isLoading}
+                                height={15}
+                                width={5}
+                                radius={10}
+
+                            />
                         
                     </div>
                 </>
             }
+            {
+                !isLoading && savedImages.length===0 &&
+
+                <h3 className="w-full text-center mt-10">
+                    No Saved Images
+                </h3>
+            }
            {!isLoading &&savedImages.length!==0 &&<> <div className="h-max w-full flex flex-col items-center">
+          
 
             
             <div className="w-3/5 h-max grid grid-cols-1 sm:grid-cols-3 gap-4 place-items-center">
@@ -128,13 +145,7 @@ function SavedImageCollection()
                     )}
                 </AnimatePresence></>}
 
-                {
-                    !isLoading && savedImages.length===0 &&
-
-                    <h3>
-                        No Saved Images
-                    </h3>
-                }
+               
             
         </div>
         </>
