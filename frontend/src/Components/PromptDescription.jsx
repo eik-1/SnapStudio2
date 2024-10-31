@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { CircleX } from 'lucide-react';
 import promptOutput from '../assets/output.webp';
 function PromptDescription({ isOpen, handleClose }) {
