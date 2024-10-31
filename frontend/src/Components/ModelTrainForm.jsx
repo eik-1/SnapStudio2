@@ -70,7 +70,7 @@ function ModelTrainForm() {
         setTrainingState("loading")
         try
         {
-            const response = await axios.post("http://localhost:3000/database/deleteModel",{
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/database/deleteModel`,{
                 userId: user.$id
             })
             if(response.data.status === 200)
@@ -89,7 +89,7 @@ function ModelTrainForm() {
         async function getTrainingStatus() {
             try {
                 const response = await axios.post(
-                    "http://localhost:3000/models/status",
+                    `${import.meta.env.VITE_API_URL}/models/status`,
                     {
                         userId: user.$id,
                     },
@@ -158,7 +158,7 @@ function ModelTrainForm() {
 
         try {
             const response = await axios.post(
-                "http://localhost:3000/models/train",
+                `${import.meta.env.VITE_API_URL}/models/train`,
                 formData,
                 {
                     headers: {

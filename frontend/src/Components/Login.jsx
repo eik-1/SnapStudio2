@@ -31,7 +31,7 @@ function Login(){
   
       const account = new Account(client);
       client
-        .setEndpoint('https://cloud.appwrite.io/v1')
+        .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
         .setProject(import.meta.env.VITE_APPWRITE_PROJECTID);
   
       try {
