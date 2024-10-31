@@ -54,6 +54,15 @@ function ModelTrainForm() {
                 setTrainingState("idle")
             },
         },
+        processing: {
+            heading: "Training Started",
+            message:
+                "Your model is being trained. This might take 15-20 minutes.",
+            button: "Train New Model",
+            handler: () => {
+                setTrainingState("idle")
+            },
+        },
         error: {
             heading: "Error",
             message: "Can't fetch training status. Please try again.",
