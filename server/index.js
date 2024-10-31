@@ -11,7 +11,10 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 //Middlewares
-app.use(cors());
+app.use(cors({
+origin:"https://https://snap-studio.vercel.app/"
+  
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
