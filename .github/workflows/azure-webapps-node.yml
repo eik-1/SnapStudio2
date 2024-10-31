@@ -41,6 +41,8 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
+    - name: Change to server directory
+      run: cd server
 
     - name: npm install, build, and test
       working-directory: ./server
