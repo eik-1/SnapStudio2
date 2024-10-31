@@ -3,10 +3,22 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@now/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["**"],
+        "experimentalEsm": true
+      }
     }
   ],
   "routes": [
+    {
+      "src": "/models/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/database/(.*)",
+      "dest": "index.js"
+    },
     {
       "src": "/(.*)",
       "dest": "index.js"
