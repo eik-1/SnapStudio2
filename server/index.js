@@ -18,6 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 //Routes
 app.use("/models", modelRoutes);
 app.use("/database", databaseRoutes);
+app.get('/', (req, res)=>{
+  res.status(200).json({
+
+    status:200,
+    message: "working"
+  })
+})
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
