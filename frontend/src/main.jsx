@@ -6,8 +6,6 @@ import { UserProvider } from "./contexts/UserContext.jsx"
 
 import { Toaster } from "./components/ui/toaster"
 
-import { Toaster } from "@/Components/UI/toaster"
-
 
 export default function RootLayout({ children }) {
   return (
