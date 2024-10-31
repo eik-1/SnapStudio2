@@ -13,8 +13,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/UI/alert-dialog"
-import { Button } from "@/components/UI/Button"
+} from "@/Components/UI/alert-dialog"
+import { Button } from "@/Components/UI/Button"
 
 import { useUser } from "@/contexts/UserContext"
 import { FadeLoader } from "react-spinners"
