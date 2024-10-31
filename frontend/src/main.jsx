@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client"
 import App from "./App.jsx"
 import "./index.css"
 import { UserProvider } from "./contexts/UserContext.jsx"
-import { Toaster } from "@/components/UI/toaster"
+import { Toaster } from "@/Components/UI/toaster"
 
 export default function RootLayout({ children }) {
   return (
