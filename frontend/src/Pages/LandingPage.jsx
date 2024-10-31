@@ -64,7 +64,7 @@ function LandingPage(){
           animate="animate"
         >
           <motion.h1 
-            className="text-4xl px-12 font-bold text-center bg-gradient-to-r from-blue-600  via-pink-600 to to-purple-600 bg-clip-text text-transparent"
+            className="text-4xl px-12 font-bold text-center bg-gradient-to-r from-blue-600  via-pink-600  to-purple-600 bg-clip-text text-transparent"
             variants={fadeIn}
           >
             Bring Your Characters to Life with a Few Simple Words.

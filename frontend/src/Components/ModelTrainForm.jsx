@@ -3,7 +3,19 @@ import JSZip from "jszip"
 import axios from "axios"
 import { cn } from "@/lib/utils"
 import { Upload } from "lucide-react"
-import { Button } from "./UI/Button"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/UI/alert-dialog"
+import { Button } from "@/components/UI/Button"
+
 import { useUser } from "@/contexts/UserContext"
 import { FadeLoader } from "react-spinners"
 import { useImage } from "@/contexts/ImageContext"
@@ -13,28 +25,34 @@ function ModelTrainForm() {
     const [triggerWord, setTriggerWord] = useState("MOD")
     const [selectedFiles, setSelectedFiles] = useState([])
     const { user } = useUser()
-    const {trainingState, setTrainingState} = useImage()
+    const { trainingState, setTrainingState } = useImage()
     let intervalId = null
     const data = {
         started: {
             heading: "Training Started",
-            message: "Your model is being trained. This might take 15-20 minutes.",
+            message:
+                "Your model is being trained. This might take 15-20 minutes.",
             button: "Train New Model",
-            handler: () => {setTrainingState("idle")}
+            handler: () => {
+                setTrainingState("idle")
+            },
         },
         succeeded: {
             heading: "Training Succeeded",
-            message: "Your model has been trained successfully. You can now enter prompt and generate images. Don't forget to check the prompt writing guide for best results.",
+            message:
+                "Your model has been trained successfully. You can now enter prompt and generate images. Don't forget to check the prompt writing guide for best results.",
             button: "Train New Model",
-            handler: ()=> {setTrainingState("idle")
-         
-            }
+            handler: () => {
+                setTrainingState("idle")
+            },
         },
         failed: {
             heading: "Training Failed",
             message: "Your model training has failed. Please try again.",
             button: "Train Model Again",
-            handler: () => {setTrainingState("idle")},
+            handler: () => {
+                setTrainingState("idle")
+            },
         },
         error: {
             heading: "Error",
@@ -42,9 +60,31 @@ function ModelTrainForm() {
             button: "Check Status Again",
             handler: () => {
                 setTrainingState("loading")
-                getTrainingStatus()}
+                getTrainingStatus()
+            },
         },
     }
+
+  async function handleDeleteModel(){
+
+        setTrainingState("loading")
+        try
+        {
+            const response = await axios.post("http://localhost:3000/database/deleteModel",{
+                userId: user.$id
+            })
+            if(response.data.status === 200)
+            {
+                setTrainingState("idle")
+            }
+
+        }
+        catch(err)  {
+            console.log(err)
+            setTrainingState("error")
+        }
+
+  }
     const getTrainingStatus = useCallback(
         async function getTrainingStatus() {
             try {
@@ -64,7 +104,6 @@ function ModelTrainForm() {
                     clearInterval(intervalId)
                     setTrainingState("idle")
                 } else {
-                    
                     setTrainingState("error")
                 }
             }
@@ -304,7 +343,7 @@ function ModelTrainForm() {
                         <div className="font-sans flex flex-col gap-1 h-max pb-6 border-b-[1px] ">
                             <h1
                                 className={cn(
-                                    `font-sans font-semibold tracking-tighter text-xl text-gray-800 ${trainingState === "error" && 'text-red-500'} ${trainingState === "succeeded" && 'text-emerald-600' }`,
+                                    `font-sans font-semibold tracking-tighter text-xl text-gray-800 ${trainingState === "error" && "text-red-500"} ${trainingState === "succeeded" && "text-emerald-600"}`,
                                 )}
                             >
                                 {data[trainingState].heading}
@@ -312,17 +351,48 @@ function ModelTrainForm() {
                             <p className="text-sm font-regular tracking-tight text-gray-500">
                                 {data[trainingState].message}
                             </p>
+
                         </div>
                     </div>
                     <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
-                        <Button
-                            type="button"
-                            onClick={data[trainingState].handler}
-                            className="w-2/3 mx-auto"
-                            disabled={trainingState === "started"}
-                        >
-                            {data[trainingState].button}
-                        </Button>
+                        {trainingState === "succeeded" ? (
+                            <>
+                                <AlertDialog>
+                                    <AlertDialogTrigger className="w-full">
+                                        <Button className="w-2/3 mx-auto">Train New Model</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Training New Model
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription className="text-red-700">
+                                                Training a new model will overwrite the existing model. Are you sure you want to continue?
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction onClick={handleDeleteModel}>
+                                                Continue
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    type="button"
+                                    onClick={data[trainingState].handler}
+                                    className="w-2/3 mx-auto"
+                                    disabled={trainingState === "started"}
+                                >
+                                    {data[trainingState].button}
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             </>

@@ -48,7 +48,7 @@ function ImageGrid() {
     } else if (generationStatus.status === "loading") {
         content = (
             <>
-                <div className="w-3/6 p-4 bg-gray-50 rounded-xl flex justify-center items-center">
+                <div className="w-3/6 p-4 bg-[#ffffff50] rounded-xl backdrop-blur-sm shadow-sm flex justify-center items-center">
                     <FadeLoader
                         loading={true}
                         height={15}
@@ -181,7 +181,7 @@ function ImageGrid() {
                                             }}
                                         >
                                             <Heart color={`${isSaved.includes(selectedId) &&'#ff4600'}`} size={24} 
-                                            fill={`${isSaved.includes(selectedId)?"#ff4600":"none"}`}
+                                            fill={`${isSaved.includes(selectedId)?"#ff4600":"white"}`}
                                             />
                                         </div>
                             </motion.div>

@@ -6,7 +6,7 @@ import Home from "./Pages/Home"
 import Login from "./Components/Login"
 import { useUser } from "./contexts/UserContext"
 import { ImageProvider } from "./contexts/ImageContext"
-import SavedImageCollection from "./Pages/ImageCollection"
+import SavedImageCollection from "./Pages/SavedImageCollection"
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useUser()

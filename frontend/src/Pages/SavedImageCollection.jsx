@@ -32,11 +32,12 @@ function SavedImageCollection()
        
     },[user.$id])
     return(
-        <div className="min-h-screen w-screen mt-[12dvh] flex-col items-center">
-            <h1 className="w-full text-center font-sans font-bold text-3xl mb-10 mt-14 tracking-tight">Gallery</h1>
+        <>
+        <div className="min-h-screen w-screen mt-[12dvh] flex-col bg-transparent items-center">
+            <h1 className="w-full text-center font-sans font-bold text-3xl mb-10 pt-12 tracking-tight text-gray-800 ">Gallery</h1>
             {
                 isLoading && <>
-                    <div className="h-max w-max">
+                    <div className="h-max w-full flex justify-center">
                             <FadeLoader/>
                         
                     </div>
@@ -45,7 +46,7 @@ function SavedImageCollection()
            {!isLoading &&savedImages.length!==0 &&<> <div className="h-max w-full flex flex-col items-center">
 
             
-            <div className="w-3/5 h-max grid grid-cols-1 sm:grid-cols-3 place-items-center">
+            <div className="w-3/5 h-max grid grid-cols-1 sm:grid-cols-3 gap-4 place-items-center">
                         {savedImages.map((url, index) => (
                             <motion.div
                                 key={index}
@@ -136,6 +137,7 @@ function SavedImageCollection()
                 }
             
         </div>
+        </>
 
     )
 }

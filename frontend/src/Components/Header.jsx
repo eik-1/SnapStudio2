@@ -6,7 +6,7 @@ import Avvvatars from "avvvatars-react"
 import { Button } from "./UI/Button"
 import { useUser } from "@/contexts/UserContext"
 import { useToast } from "@/hooks/use-toast"
-import {Link} from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 function Header() {
     const navigate = useNavigate()
@@ -24,7 +24,6 @@ function Header() {
             description: "Logged out successfully",
         })
         navigate("/")
-
     }
 
     return (
@@ -37,16 +36,30 @@ function Header() {
             <nav>
                 <ul className="flex items-center space-x-4 gap-12 font-sans">
                     <li>
-                        <Link to="/home" className="text-gray-600 font-semibold">
+                        <NavLink
+                            to="/home"
+                            end
+                            className={({ isActive }) =>
+                                isActive
+                                    ? "text-slate-800 font-bold" // Active styles
+                                    : "text-gray-600 hover:text-gray-800"
+                            }
+                        >
                             Home
-                        </Link>
+                        </NavLink>
                     </li>
                     <li>
-                        <Link to="/home/mycollection" className="text-gray-600 font-semibold">
+                        <NavLink
+                            to="/home/mycollection"
+                            className={({ isActive }) =>
+                                isActive
+                                    ? "text-slate-800 font-bold" // Active styles
+                                    : "text-gray-600 hover:text-gray-800"
+                            }
+                        >
                             My Collection
-                        </Link>
+                        </NavLink>
                     </li>
-                  
                 </ul>
             </nav>
 
