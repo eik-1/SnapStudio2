@@ -19,6 +19,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/models", modelRoutes);
 app.use("/database", databaseRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
