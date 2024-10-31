@@ -12,7 +12,7 @@ const app = express();
 
 //Middlewares
 app.use(cors({
-origin:"https://https://snap-studio.vercel.app/"
+origin:"https://snap-studio.vercel.app"
   
 }));
 app.use(express.json());
