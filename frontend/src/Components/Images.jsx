@@ -2,27 +2,32 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import axios from "axios"
 import { Image, AlertTriangleIcon, Download, Heart } from "lucide-react"
+import { FadeLoader } from "react-spinners"
+
 import { useUser } from "@/contexts/UserContext"
 import { useImage } from "@/contexts/ImageContext"
-import { FadeLoader } from "react-spinners"
+
 function ImageGrid() {
     const [selectedId, setSelectedId] = useState(null)
     const [isHovering, setIsHovering] = useState(false)
-    const {generatedImageUrls:imageUrls, generationStatus, isSaved, setIsSaved}=useImage()
+    const {
+        generatedImageUrls: imageUrls,
+        generationStatus,
+        isSaved,
+        setIsSaved,
+    } = useImage()
     const { user } = useUser()
     let content = null
     console.log(generationStatus)
     console.log(imageUrls)
     async function handleSaveImage(url, index) {
-        
-     console.log(url);
-     console.log(index)
-     if(isSaved.includes(index))
-     {
-        return
-     }
-     setIsSaved((prev)=>[...prev,index])
-      try {
+        console.log(url)
+        console.log(index)
+        if (isSaved.includes(index)) {
+            return
+        }
+        setIsSaved((prev) => [...prev, index])
+        try {
             await axios.post(
                 `${import.meta.env.VITE_API_URL}/database/save-image`,
                 {
@@ -31,7 +36,6 @@ function ImageGrid() {
                 },
             )
             console.log("image saved")
-            
         } catch (err) {
             console.log(err)
         }
@@ -86,23 +90,21 @@ function ImageGrid() {
                                             className="block absolute h-max w-max top-1 right-1 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 "
                                             href={url}
                                             download={"image" + index + ".png"}
-                                            
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            <Download color="white" 
-                                            
-                                            
-                                            size={16} />
+                                            <Download color="white" size={16} />
                                         </a>
                                         <div
                                             className="block absolute h-max w-max top-1 right-12 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
-                                            onClick={(e) =>{
+                                            onClick={(e) => {
                                                 e.stopPropagation()
                                                 handleSaveImage(url, index)
                                             }}
                                         >
-                                            <Heart color={`${isSaved.includes(index) &&'#ff4600'}`} size={16} 
-                                            fill={`${isSaved.includes(index)?"#ff4600":"white"}`}
+                                            <Heart
+                                                color={`${isSaved.includes(index) && "#ff4600"}`}
+                                                size={16}
+                                                fill={`${isSaved.includes(index) ? "#ff4600" : "white"}`}
                                             />
                                         </div>
                                     </>
@@ -174,16 +176,21 @@ function ImageGrid() {
                                     <Download color="white" size={24} />
                                 </a>
                                 <div
-                                            className="block absolute h-max w-max top-4 right-[7rem] text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
-                                            onClick={(e) =>{
-                                                e.stopPropagation()
-                                                handleSaveImage(imageUrls[selectedId], selectedId)
-                                            }}
-                                        >
-                                            <Heart color={`${isSaved.includes(selectedId) &&'#ff4600'}`} size={24} 
-                                            fill={`${isSaved.includes(selectedId)?"#ff4600":"white"}`}
-                                            />
-                                        </div>
+                                    className="block absolute h-max w-max top-4 right-[7rem] text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-75"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleSaveImage(
+                                            imageUrls[selectedId],
+                                            selectedId,
+                                        )
+                                    }}
+                                >
+                                    <Heart
+                                        color={`${isSaved.includes(selectedId) && "#ff4600"}`}
+                                        size={24}
+                                        fill={`${isSaved.includes(selectedId) ? "#ff4600" : "white"}`}
+                                    />
+                                </div>
                             </motion.div>
                         </motion.div>
                     )}
