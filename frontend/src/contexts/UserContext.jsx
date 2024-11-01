@@ -1,20 +1,21 @@
 import { useState, createContext, useEffect, useContext, useMemo } from "react"
 import { Account } from "appwrite"
-import {client} from "@/configs/ClientConfig"
-
-
+import { client } from "@/configs/ClientConfig"
 
 const UserContext = createContext()
 
 function UserProvider({ children }) {
-    const [user, setUser] = useState(localStorage.getItem("userData")?JSON.parse(localStorage.getItem("userData")):null)
+    const [user, setUser] = useState(
+        localStorage.getItem("userData")
+            ? JSON.parse(localStorage.getItem("userData"))
+            : null,
+    )
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    
 
-    const account = useMemo(()=>new Account(client),[])
+    const account = useMemo(() => new Account(client), [])
 
-   /* useEffect(() => {
+    /* useEffect(() => {
         async function fetchUser() {
             try {
                 const response = await account.get()
@@ -31,15 +32,12 @@ function UserProvider({ children }) {
 
     async function login(email, password) {
         try {
-             await account.createEmailPasswordSession(
-                email,
-                password,
-            )
+            await account.createEmailPasswordSession(email, password)
             const response = await account.get()
-            const userData={
-                email:response.email,
-                name:response.name,
-                $id:response.$id
+            const userData = {
+                email: response.email,
+                name: response.name,
+                $id: response.$id,
             }
             localStorage.setItem("userData", JSON.stringify(userData))
             console.log("response from login after account get", response)
@@ -55,7 +53,7 @@ function UserProvider({ children }) {
         try {
             localStorage.removeItem("userData")
             await account.deleteSession("current")
-            
+
             setUser(null)
         } catch (err) {
             setError(err)

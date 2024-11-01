@@ -35,11 +35,11 @@ SnapStudio is a web application that allows users to generate personalized AI-en
 - React.js
 - Tailwind CSS
 - Shadcn UI Components
-- Appwrite SDK
+- Appwrite SDK (Auth)
 
 ### Backend
 
 - Node.js
 - Express.js
-- Appwrite (Database & Auth)
+- Appwrite (Database & Buckets)
 - Replicate API (AI Model)

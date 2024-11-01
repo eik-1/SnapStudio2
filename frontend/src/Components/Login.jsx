@@ -1,228 +1,265 @@
 import React, { useState } from "react"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Mail, Lock } from "lucide-react"
 import { Client, Account } from "appwrite"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
+
 import { useUser } from "@/contexts/UserContext"
-import { Mail, Lock } from "lucide-react"
 import { Alert, AlertDescription } from "@/Components/UI/alert"
 import { useToast } from "@/hooks/use-toast"
+
 const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  };
-function Login(){
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
-    const [errors, setErrors] = useState({});
-    const [isSignup, setIsSignup] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-  
-    const { user, login } = useUser();
-    const {toast}=useToast();
-    const navigate = useNavigate();
-  
-  
+    transition: { duration: 0.6 },
+}
+function Login() {
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [username, setUsername] = useState("")
+    const [errors, setErrors] = useState({})
+    const [isSignup, setIsSignup] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
+
+    const { user, login } = useUser()
+    const { toast } = useToast()
+    const navigate = useNavigate()
+
     const createUser = async () => {
-      const client = new Client();
-  
-      const account = new Account(client);
-      client
-        .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
-        .setProject(import.meta.env.VITE_APPWRITE_PROJECTID);
-  
-      try {
-        const response = await account.create('unique()', email, password, username);
-        console.log(response);
-        setPassword('');
-        setIsSignup(false);
-        toast({
-          description: "Sign Up Successful. Login to continue", 
-        })
-      } catch (error) {
-        console.log(error);
-        setErrorMessage(error.message || 'Failed to create account');
-      }
-    };
-  
+        const client = new Client()
+
+        const account = new Account(client)
+        client
+            .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+            .setProject(import.meta.env.VITE_APPWRITE_PROJECTID)
+
+        try {
+            const response = await account.create(
+                "unique()",
+                email,
+                password,
+                username,
+            )
+            console.log(response)
+            setPassword("")
+            setIsSignup(false)
+            toast({
+                description: "Sign Up Successful. Login to continue",
+            })
+        } catch (error) {
+            console.log(error)
+            setErrorMessage(error.message || "Failed to create account")
+        }
+    }
+
     const loginUser = async () => {
-      try {
-        await login(email, password);
-        navigate('/home');
-      } catch (error) {
-        console.log(error);
-        setErrorMessage(error.message || 'Failed to login');
-      }
-    };
-  
+        try {
+            await login(email, password)
+            navigate("/home")
+        } catch (error) {
+            console.log(error)
+            setErrorMessage(error.message || "Failed to login")
+        }
+    }
+
     /* Form Validation */
     const validateForm = () => {
-      const newErrors = {};
-  
-      if (!email) {
-        newErrors.email = 'Email is required';
-      } else if (!/\S+@\S+\.\S+/.test(email)) {
-        newErrors.email = 'Email is invalid';
-      }
-  
-      if (!password) {
-        newErrors.password = 'Password is required';
-      } else if (password.length < 8) {
-        newErrors.password = 'Password must be at least 8 characters long';
-      }
-  
-      if (isSignup && !username) {
-        newErrors.username = 'Username is required';
-      }
-  
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-  
+        const newErrors = {}
+
+        if (!email) {
+            newErrors.email = "Email is required"
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            newErrors.email = "Email is invalid"
+        }
+
+        if (!password) {
+            newErrors.password = "Password is required"
+        } else if (password.length < 8) {
+            newErrors.password = "Password must be at least 8 characters long"
+        }
+
+        if (isSignup && !username) {
+            newErrors.username = "Username is required"
+        }
+
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
+
     /* Form Submission */
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      setErrorMessage('');
-      if (validateForm()) {
-        setLoading(true);
-        try {
-          if (isSignup) {
-            await createUser();
-          } else {
-            await loginUser();
-          }
-        } catch (err) {
-          setErrorMessage(err.message || 'An error occurred');
-        } finally {
-          setLoading(false);
+        e.preventDefault()
+        setErrorMessage("")
+        if (validateForm()) {
+            setLoading(true)
+            try {
+                if (isSignup) {
+                    await createUser()
+                } else {
+                    await loginUser()
+                }
+            } catch (err) {
+                setErrorMessage(err.message || "An error occurred")
+            } finally {
+                setLoading(false)
+            }
         }
-      }
-    };
+    }
     return (
         <motion.div
-        className="w-1/2 p-12 flex flex-col justify-center items-center"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-      >
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <motion.h2 className="text-3xl font-bold  mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-700 " variants={fadeIn}>
-              SnapStudio
-            </motion.h2>
-            <motion.p className="text-lg text-gray-600 mb-6" variants={fadeIn}>
-              {isSignup ? 'Create a new account' : 'Login to your account'}
-            </motion.p>
-           
-          </div>
-
-          <motion.form className="space-y-6" variants={fadeIn} onSubmit={handleSubmit}>
-            {isSignup && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    <Mail size={20} />
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
-                      errors.username ? 'border-red-500' : 'border-gray-300'
-                    } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
+            className="w-1/2 p-12 flex flex-col justify-center items-center"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+        >
+            <div className="w-full max-w-md space-y-8">
+                <div className="text-center">
+                    <motion.h2
+                        className="text-3xl font-bold  mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-700 "
+                        variants={fadeIn}
+                    >
+                        SnapStudio
+                    </motion.h2>
+                    <motion.p
+                        className="text-lg text-gray-600 mb-6"
+                        variants={fadeIn}
+                    >
+                        {isSignup
+                            ? "Create a new account"
+                            : "Login to your account"}
+                    </motion.p>
                 </div>
-                {errors.username && (
-                  <Alert variant="destructive" className="mt-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{errors.username}</AlertDescription>
-                  </Alert>
-                )}
-              </div>
-            )}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <Mail size={20} />
-                </span>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              {errors.email && (
-                <Alert variant="destructive" className="mt-2">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{errors.email}</AlertDescription>
-                </Alert>
-              )}
+                <motion.form
+                    className="space-y-6"
+                    variants={fadeIn}
+                    onSubmit={handleSubmit}
+                >
+                    {isSignup && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Username
+                            </label>
+                            <div className="relative">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <Mail size={20} />
+                                </span>
+                                <input
+                                    type="text"
+                                    placeholder="Username"
+                                    className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
+                                        errors.username
+                                            ? "border-red-500"
+                                            : "border-gray-300"
+                                    } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                                    value={username}
+                                    onChange={(e) =>
+                                        setUsername(e.target.value)
+                                    }
+                                />
+                            </div>
+                            {errors.username && (
+                                <Alert variant="destructive" className="mt-2">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertDescription>
+                                        {errors.username}
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+                        </div>
+                    )}
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Email
+                        </label>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                <Mail size={20} />
+                            </span>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
+                                    errors.email
+                                        ? "border-red-500"
+                                        : "border-gray-300"
+                                } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        {errors.email && (
+                            <Alert variant="destructive" className="mt-2">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription>
+                                    {errors.email}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Password
+                        </label>
+                        <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                <Lock size={20} />
+                            </span>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
+                                    errors.password
+                                        ? "border-red-500"
+                                        : "border-gray-300"
+                                } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        {errors.password && (
+                            <Alert variant="destructive" className="mt-2">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription>
+                                    {errors.password}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                    </div>
+
+                    {errorMessage && (
+                        <Alert variant="destructive" className="mt-2">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription>{errorMessage}</AlertDescription>
+                        </Alert>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                        disabled={loading}
+                    >
+                        {isSignup ? "Sign Up" : "Login"}
+                    </button>
+                </motion.form>
+
+                <button
+                    onClick={() => setIsSignup(!isSignup)}
+                    className="w-full mt-4 text-blue-600 hover:underline"
+                >
+                    {isSignup
+                        ? "Already have an account? Login"
+                        : "Create new account"}
+                </button>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <Lock size={20} />
-                </span>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
-                    errors.password ? 'border-red-500' : 'border-gray-300'
-                  } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {errors.password && (
-                <Alert variant="destructive" className="mt-2">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{errors.password}</AlertDescription>
-                </Alert>
-              )}
+            <div className="mt-8 text-center text-sm text-gray-400">
+                © 2024 ALL RIGHTS RESERVED
             </div>
-
-            {errorMessage && (
-              <Alert variant="destructive" className="mt-2">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{errorMessage}</AlertDescription>
-              </Alert>
-            )}
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
-              disabled={loading}
-            >
-              {isSignup ? 'Sign Up' : 'Login'}
-            </button>
-          </motion.form>
-
-          <button
-            onClick={() => setIsSignup(!isSignup)}
-            className="w-full mt-4 text-blue-600 hover:underline"
-          >
-            {isSignup ? 'Already have an account? Login' : 'Create new account'}
-          </button>
-        </div>
-
-        <div className="mt-8 text-center text-sm text-gray-400">
-          © 2024 ALL RIGHTS RESERVED
-        </div>
-      </motion.div>
-    
+        </motion.div>
     )
 }
 

@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import JSZip from "jszip"
 import axios from "axios"
-import { cn } from "@/lib/utils"
 import { Upload } from "lucide-react"
+import { FadeLoader } from "react-spinners"
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,11 +15,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/Components/UI/alert-dialog"
+import { cn } from "@/lib/utils"
 import { Button } from "@/Components/UI/Button"
-
 import { useUser } from "@/contexts/UserContext"
-import { FadeLoader } from "react-spinners"
 import { useImage } from "@/contexts/ImageContext"
+
 function ModelTrainForm() {
     const [modelName, setModelName] = useState("")
     const [isDragging, setIsDragging] = useState(false)
@@ -74,26 +75,23 @@ function ModelTrainForm() {
         },
     }
 
-  async function handleDeleteModel(){
-
+    async function handleDeleteModel() {
         setTrainingState("loading")
-        try
-        {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/database/deleteModel`,{
-                userId: user.$id
-            })
-            if(response.data.status === 200)
-            {
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL}/database/deleteModel`,
+                {
+                    userId: user.$id,
+                },
+            )
+            if (response.data.status === 200) {
                 setTrainingState("idle")
             }
-
-        }
-        catch(err)  {
+        } catch (err) {
             console.log(err)
             setTrainingState("error")
         }
-
-  }
+    }
     const getTrainingStatus = useCallback(
         async function getTrainingStatus() {
             try {
@@ -360,7 +358,6 @@ function ModelTrainForm() {
                             <p className="text-sm font-regular tracking-tight text-gray-500">
                                 {data[trainingState].message}
                             </p>
-
                         </div>
                     </div>
                     <div className="w-full h-[10%] flex justify-center items-center border-t-[1px]">
@@ -368,7 +365,9 @@ function ModelTrainForm() {
                             <>
                                 <AlertDialog>
                                     <AlertDialogTrigger className="w-full">
-                                        <Button className="w-2/3 mx-auto">Train New Model</Button>
+                                        <Button className="w-2/3 mx-auto">
+                                            Train New Model
+                                        </Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
@@ -376,14 +375,19 @@ function ModelTrainForm() {
                                                 Training New Model
                                             </AlertDialogTitle>
                                             <AlertDialogDescription className="text-red-700">
-                                                Training a new model will overwrite the existing model. Are you sure you want to continue?
+                                                Training a new model will
+                                                overwrite the existing model.
+                                                Are you sure you want to
+                                                continue?
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>
                                                 Cancel
                                             </AlertDialogCancel>
-                                            <AlertDialogAction onClick={handleDeleteModel}>
+                                            <AlertDialogAction
+                                                onClick={handleDeleteModel}
+                                            >
                                                 Continue
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
