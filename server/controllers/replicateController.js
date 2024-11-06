@@ -1,18 +1,16 @@
-import dotenv from "dotenv";
 import axios from "axios";
+import dotenv from "dotenv";
 import FormData from "form-data";
-import { writeFile } from "node:fs/promises";
-import fs from "fs";
 
+import { response } from "express";
 import { replicate } from "../configs/replicateConfig.js";
+import ApiResponse from "../utils/ApiResponse.js";
 import {
   createModel,
+  deleteModel,
   getModel,
   updateModel,
-  deleteModel,
 } from "./databaseController.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import { response } from "express";
 
 dotenv.config();
 
@@ -66,15 +64,13 @@ export async function trainOstrisModel(req, res) {
         },
       }
     );
-    console.log("Training started: ", training.status);
-    console.log("Training ID: ", training.id);
+    console.log("Training started: ", training);
     await createModel(
       userId,
       modelName,
       triggerWord,
       training.status,
-      training.id,
-      training.version
+      training.id
     );
     return res.status(200).json(
       new ApiResponse(200, "Model training started", {
@@ -106,11 +102,16 @@ export async function getTrainingStatus(req, res) {
     if (response.status === "failed") {
       await deleteModel(userId);
     }
+    if (response.status === "succeeded") {
+      await updateModel(userId, response.status, response.output.version);
+    }
     return res.status(200).json(
       new ApiResponse(200, "Training status", {
         trainingStatus: response.status,
       })
     );
+
+    // response.output.version
   } catch (err) {
     if (err.response?.status === 404) {
       return res.status(404).json(
@@ -147,13 +148,11 @@ export async function getTriggerWord(req, res) {
       })
     );
   } catch (err) {
-    return res
-      .status(500)
-      .json(
-        new ApiResponse(500, "Error getting trigger word", {
-          error: err.message,
-        })
-      );
+    return res.status(500).json(
+      new ApiResponse(500, "Error getting trigger word", {
+        error: err.message,
+      })
+    );
   }
 }
 
@@ -164,7 +163,7 @@ export async function runUserModel(req, res) {
     const model = await getModel(userId);
     const modelVersion = model.documents[0].model_version;
     console.log("Generating images...");
-    const output = await replicate.run(`eik-1/snapshot:${modelVersion}`, {
+    const output = await replicate.run(`${modelVersion}`, {
       input: {
         model: "dev",
         prompt: prompt,

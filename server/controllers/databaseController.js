@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
+import fs from "fs";
 import { ID, Query } from "node-appwrite";
 import { File } from "node-fetch-native-with-agent";
-import fs from "fs";
 import path from "path";
 import { pipeline } from "stream/promises";
 
@@ -29,7 +29,7 @@ export async function createModel(
         trigger_word: triggerWord,
         status: status,
         model_id: modelId,
-        model_version: modelVersion,
+        model_version: "",
       }
     );
     console.log("Model created: ", response);
@@ -52,7 +52,7 @@ export async function getModel(userId) {
   }
 }
 
-export async function updateModel(userId, status) {
+export async function updateModel(userId, status, modelVersion) {
   try {
     const model = await getModel(userId);
     const modelId = model.documents[0].$id;
@@ -61,6 +61,7 @@ export async function updateModel(userId, status) {
       process.env.APPWRITE_MODELS_COLLECTION_ID,
       modelId,
       {
+        model_version: modelVersion,
         status: status,
       }
     );
