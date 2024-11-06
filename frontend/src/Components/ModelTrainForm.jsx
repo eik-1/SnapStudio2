@@ -76,21 +76,8 @@ function ModelTrainForm() {
     }
 
     async function handleDeleteModel() {
-        setTrainingState("loading")
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/database/deleteModel`,
-                {
-                    userId: user.$id,
-                },
-            )
-            if (response.data.status === 200) {
-                setTrainingState("idle")
-            }
-        } catch (err) {
-            console.log(err)
-            setTrainingState("error")
-        }
+        setTrainingState("idle")
+        
     }
     const getTrainingStatus = useCallback(
         async function getTrainingStatus() {
@@ -353,10 +340,10 @@ function ModelTrainForm() {
                                     `font-sans font-semibold tracking-tighter text-xl text-gray-800 ${trainingState === "error" && "text-red-500"} ${trainingState === "succeeded" && "text-emerald-600"}`,
                                 )}
                             >
-                                {data[trainingState].heading}
+                                {data[trainingState]?.heading}
                             </h1>
                             <p className="text-sm font-regular tracking-tight text-gray-500">
-                                {data[trainingState].message}
+                                {data[trainingState]?.message}
                             </p>
                         </div>
                     </div>
@@ -402,7 +389,7 @@ function ModelTrainForm() {
                                     className="w-2/3 mx-auto"
                                     disabled={trainingState === "started"}
                                 >
-                                    {data[trainingState].button}
+                                    {data[trainingState]?.button}
                                 </Button>
                             </>
                         )}
