@@ -98,12 +98,12 @@ const InputFile = {
 
 export async function saveImage(req, res) {
   const { userId, fileUrl } = req.body;
+  const endpoint = process.env.APPWRITE_ENDPOINT;
+  const storageId = process.env.APPWRITE_STORAGE_ID;
+  const projectId = process.env.APPWRITE_PROJECTID;
 
   try {
-    const tempFilePath = path.join(
-      process.cwd(),
-      "temp-" + Date.now() + ".webp"
-    );
+    const tempFilePath = path.join(process.cwd(), Date.now() + ".webp");
 
     const responseFile = await fetch(fileUrl);
     const fileStream = fs.createWriteStream(tempFilePath);
@@ -122,8 +122,7 @@ export async function saveImage(req, res) {
     console.log("Image created: ", image.$id);
 
     /* Get file url from storage */
-    const imageUrl = `https://cloud.appwrite.io/v1/storage/buckets/${process.env.APPWRITE_STORAGE_ID}/files/${image.$id}/view?project=${process.env.APPWRITE_PROJECTID}`;
-    console.log("Image url: ", imageUrl);
+    const imageUrl = `${endpoint}/storage/buckets/${storageId}/files/${image.$id}/view?project=${projectId}`;
 
     /* Create image document in database */
     const response = await databases.createDocument(

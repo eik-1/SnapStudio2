@@ -1,6 +1,6 @@
-import { useState, createContext, useEffect, useContext, useMemo } from "react"
-import { Account } from "appwrite"
 import { client } from "@/configs/ClientConfig"
+import { Account } from "appwrite"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 const UserContext = createContext()
 
@@ -32,6 +32,7 @@ function UserProvider({ children }) {
 
     async function login(email, password) {
         try {
+            setLoading(true)
             await account.createEmailPasswordSession(email, password)
             const response = await account.get()
             const userData = {
@@ -46,14 +47,15 @@ function UserProvider({ children }) {
         } catch (err) {
             setError(err)
             throw err
+        } finally {
+            setLoading(false)
         }
     }
 
     async function logout() {
         try {
             localStorage.removeItem("userData")
-            await account.deleteSession("current")
-
+            await account.deleteSessions()
             setUser(null)
         } catch (err) {
             setError(err)
@@ -62,7 +64,9 @@ function UserProvider({ children }) {
     }
 
     return (
-        <UserContext.Provider value={{ user, loading, error, login, logout }}>
+        <UserContext.Provider
+            value={{ user, loading, error, login, logout, setLoading }}
+        >
             {children}
         </UserContext.Provider>
     )

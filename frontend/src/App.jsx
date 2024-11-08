@@ -1,20 +1,20 @@
 import React from "react"
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
-import RootLayout from "./Pages/RootLayout"
-import LandingPage from "./Pages/LandingPage"
-import Home from "./Pages/Home"
-import Login from "./Components/Login"
-import { useUser } from "./contexts/UserContext"
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom"
+
+import Error from "./Components/Error"
 import { ImageProvider } from "./contexts/ImageContext"
+import { useUser } from "./contexts/UserContext"
+import Home from "./Pages/Home"
+import LandingPage from "./Pages/LandingPage"
+import Login from "./Pages/Login"
+import Pricing from "./Pages/Pricing"
+import RootLayout from "./Pages/RootLayout"
 import SavedImageCollection from "./Pages/SavedImageCollection"
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useUser()
-
     if (loading) return
-    console.log(user)
     if (!user) return <Navigate to="/" replace />
-
     return children
 }
 
@@ -23,13 +23,23 @@ function App() {
         {
             path: "/",
             element: <LandingPage />,
+            errorElement: <Error />,
+        },
+        {
+            path: "/login/:email",
+            element: <Login />,
+            errorElement: <Error />,
+        },
+        {
+            path: "/pricing",
+            element: <Pricing />,
+            errorElement: <Error />,
         },
         {
             path: "/home",
             element: (
                 <ProtectedRoute>
                     <ImageProvider>
-
                         <RootLayout />
                     </ImageProvider>
                 </ProtectedRoute>
@@ -38,16 +48,14 @@ function App() {
                 {
                     index: true,
                     element: <Home />,
+                    errorElement: <Error />,
                 },
                 {
-                    path:"/home/mycollection",
-                    element:<SavedImageCollection/>
-                }
+                    path: "/home/mycollection",
+                    element: <SavedImageCollection />,
+                    errorElement: <Error />,
+                },
             ],
-        },
-        {
-            path: "/login",
-            element: <Login />,
         },
     ])
 
