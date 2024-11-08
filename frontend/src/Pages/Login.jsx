@@ -2,7 +2,7 @@ import { Account, Client } from "appwrite"
 import { motion } from "framer-motion"
 import { AlertCircle, Lock, Mail } from "lucide-react"
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 import { Alert, AlertDescription } from "@/Components/UI/alert"
 import { useUser } from "@/contexts/UserContext"
@@ -14,7 +14,9 @@ const fadeIn = {
     transition: { duration: 0.6 },
 }
 function Login() {
-    const [email, setEmail] = useState("")
+    const { email: emailFromParams } = useParams()
+
+    const [email, setEmail] = useState(emailFromParams)
     const [password, setPassword] = useState("")
     const [username, setUsername] = useState("")
     const [errors, setErrors] = useState({})
@@ -26,9 +28,8 @@ function Login() {
     const { toast } = useToast()
     const navigate = useNavigate()
 
-    const createUser = async () => {
+    async function createUser() {
         const client = new Client()
-
         const account = new Account(client)
         client
             .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
@@ -52,7 +53,7 @@ function Login() {
         }
     }
 
-    const loginUser = async () => {
+    async function loginUser() {
         try {
             await login(email, password)
             navigate("/home")
@@ -63,7 +64,7 @@ function Login() {
     }
 
     /* Form Validation */
-    const validateForm = () => {
+    function validateForm() {
         const newErrors = {}
 
         if (!email) {
@@ -87,7 +88,7 @@ function Login() {
     }
 
     /* Form Submission */
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault()
         setErrorMessage("")
         if (validateForm()) {
@@ -107,7 +108,7 @@ function Login() {
     }
     return (
         <motion.div
-            className="w-1/2 p-12 flex flex-col justify-center items-center"
+            className="w-full h-screen p-12 flex flex-col justify-center items-center"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -151,7 +152,7 @@ function Login() {
                                         errors.username
                                             ? "border-red-500"
                                             : "border-gray-300"
-                                    } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+                                    }  transition-all duration-200`}
                                     value={username}
                                     onChange={(e) =>
                                         setUsername(e.target.value)

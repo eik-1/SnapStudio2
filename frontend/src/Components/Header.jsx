@@ -1,12 +1,12 @@
+import Avvvatars from "avvvatars-react"
+import { LogOut } from "lucide-react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { LogOut } from "lucide-react"
-import Avvvatars from "avvvatars-react"
 
-import { Button } from "./UI/Button"
 import { useUser } from "@/contexts/UserContext"
 import { useToast } from "@/hooks/use-toast"
 import { NavLink } from "react-router-dom"
+import { Button } from "./UI/Button"
 
 function Header() {
     const navigate = useNavigate()
