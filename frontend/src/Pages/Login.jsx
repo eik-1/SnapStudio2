@@ -116,13 +116,13 @@ function Login() {
             <div className="w-full max-w-md space-y-8">
                 <div className="text-center">
                     <motion.h2
-                        className="text-3xl font-bold  mb-2 text-primary "
+                        className="text-4xl font-extrabold  mb-2 text-secondary "
                         variants={fadeIn}
                     >
-                        SnapStudio
+                        SnapSTUDIO
                     </motion.h2>
                     <motion.p
-                        className="text-lg text-gray-600 mb-6"
+                        className="text-lg text-base-content mb-6"
                         variants={fadeIn}
                     >
                         {isSignup
@@ -138,7 +138,7 @@ function Login() {
                 >
                     {isSignup && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-base-content mb-2">
                                 Username
                             </label>
                             <div className="relative">
@@ -150,7 +150,7 @@ function Login() {
                                     placeholder="Username"
                                     className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
                                         errors.username
-                                            ? "border-red-500"
+                                            ? "border-error"
                                             : "border-gray-300"
                                     }  transition-all duration-200`}
                                     value={username}
@@ -171,7 +171,7 @@ function Login() {
                     )}
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-base-content mb-2">
                             Email
                         </label>
                         <div className="relative">
@@ -183,7 +183,7 @@ function Login() {
                                 placeholder="Email"
                                 className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
                                     errors.email
-                                        ? "border-red-500"
+                                        ? "border-error"
                                         : "border-gray-300"
                                 } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                 value={email}
@@ -201,7 +201,7 @@ function Login() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-base-content mb-2">
                             Password
                         </label>
                         <div className="relative">
@@ -213,7 +213,7 @@ function Login() {
                                 placeholder="Password"
                                 className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
                                     errors.password
-                                        ? "border-red-500"
+                                        ? "border-error"
                                         : "border-gray-300"
                                 } focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
                                 value={password}
@@ -239,7 +239,7 @@ function Login() {
 
                     <button
                         type="submit"
-                        className="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
+                        className="w-full py-3 bg-neutral text-base-100 rounded-lg hover:bg-neutral/90 transition-colors duration-200"
                         disabled={loading}
                     >
                         {isSignup ? "Sign Up" : "Login"}
