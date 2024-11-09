@@ -9,43 +9,70 @@ import GridPattern from "@/Components/UI/grid-pattern"
 import { Input } from "@/Components/UI/Input"
 import Marquee from "@/Components/UI/marquee"
 import { useUser } from "@/contexts/UserContext"
+import { useToast } from "@/hooks/use-toast"
 
 export default function LandingPage() {
     const [email, setEmail] = useState("")
     const navigate = useNavigate()
+
+    const { user } = useUser()
+    const { toast } = useToast()
+
     function handleEmailSubmit() {
-        navigate(`/login/${email}`)
+        navigate("/login", { state: { email: email } })
+    }
+
+    function handleDashboard() {
+        if (user) {
+            navigate("/home")
+        } else {
+            toast({
+                description: "Please login to access the dashboard",
+            })
+        }
     }
 
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen">
             <nav className="flex items-center justify-between p-4 lg:px-8">
                 <div className="flex items-center space-x-2">
-                    <Camera className="h-8 w-8 text-purple-500" />
-                    <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+                    <Camera className="h-8 w-8 text-primary" />
+                    <span className="text-2xl font-bold text-primary ">
                         SnapSTUDIO
                     </span>
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3 text-lg font-bold">
                     <NavLink
                         to="/pricing"
-                        className="text-gray-300 hover:text-white"
+                        className="text-base-content hover:bg-base-200 rounded-md px-3 py-2"
                     >
                         Pricing
                     </NavLink>
-                    <NavLink
-                        to="/login"
-                        className="text-gray-300 hover:text-white"
-                    >
-                        Log in
-                    </NavLink>
+
                     <NavLink
                         to="/gallery"
-                        className="text-gray-300 hover:text-white"
+                        className="text-base-content hover:bg-base-200 rounded-md px-3 py-2"
                     >
                         Gallery
                     </NavLink>
-                    <Button className="bg-purple-600 hover:bg-purple-700">
+
+                    {!user ? (
+                        <NavLink
+                            to="/login"
+                            className="text-base-content hover:bg-base-200 rounded-md px-3 py-2"
+                        >
+                            Login
+                        </NavLink>
+                    ) : (
+                        <span className="text-base-content hover:bg-base-200 rounded-md px-3 py-2">
+                            Hello, {user.name}
+                        </span>
+                    )}
+
+                    <Button
+                        className="bg-secondary hover:bg-secondary rounded-md text-base-content text-lg font-bold"
+                        onClick={handleDashboard}
+                    >
                         Dashboard →
                     </Button>
                 </div>
@@ -57,41 +84,44 @@ export default function LandingPage() {
                         <div>
                             <div className="flex items-center gap-4 mb-6">
                                 {/* <Flame className="h-12 w-12 text-orange-500" /> */}
-                                <h1 className="text-5xl font-bold">
-                                    Your AI Photographer
+                                <h1 className="text-6xl font-extrabold text-base-content">
+                                    Your{" "}
+                                    <span className="text-secondary">
+                                        AI Photographer
+                                    </span>{" "}
                                 </h1>
                             </div>
 
-                            <p className="text-xl text-gray-400 mb-8">
+                            <p className="text-xl text-neutral mb-8">
                                 Get custom images of you, any way you envision.
                                 With just a few photos of yourself and a simple
                                 prompt, you can create stunning, customized
-                                images that bring your ideas to life..
+                                images that bring your ideas to life
                             </p>
 
                             <div className="space-y-6">
                                 <div className="flex items-center gap-4">
-                                    <Camera className="h-6 w-6 text-purple-500" />
+                                    <Camera className="h-6 w-6 text-secondary" />
                                     <span className="text-lg">
-                                        <span className="font-semibold hover:text-purple-400 cursor-pointer">
+                                        <span className="font-semibold hover:text-secondary cursor-pointer">
                                             Take 100% AI photos
                                         </span>{" "}
                                         in any pose, place or action
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <ShoppingBag className="h-6 w-6 text-purple-500" />
+                                    <ShoppingBag className="h-6 w-6 text-secondary" />
                                     <span className="text-lg">
-                                        <span className="font-semibold hover:text-purple-400 cursor-pointer">
+                                        <span className="font-semibold hover:text-secondary  cursor-pointer">
                                             Try on clothes on your model
                                         </span>{" "}
                                         for your Shopify store
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <Video className="h-6 w-6 text-purple-500" />
+                                    <Video className="h-6 w-6 text-secondary" />
                                     <span className="text-lg">
-                                        <span className="font-semibold hover:text-purple-400 cursor-pointer">
+                                        <span className="font-semibold hover:text-secondary  cursor-pointer">
                                             Create 100% AI videos
                                         </span>{" "}
                                         from any AI photo you take
@@ -100,15 +130,15 @@ export default function LandingPage() {
                             </div>
                         </div>
 
-                        <div className="lg:pl-8">
-                            <div className="relative overflow-hidden rounded-2xl bg-gray-900 p-8">
-                                <div className="absolute top-2 right-2">
+                        <div className="lg:pl-8 flex justify-center items-center">
+                            <div className="w-[30rem] overflow-hidden p-[3rem] card card-body bg-transparent shadow-xl border-[10px] border-secondary">
+                                <div className="absolute top-[1.5rem] right-1 transform rotate-[10deg]">
                                     <span className="inline-flex items-center rounded-full bg-green-400 px-2.5 py-0.5 text-sm font-medium text-green-900">
-                                        Now with Flux 1.1!
+                                        Now with Flux Pro Ultra 1.1!
                                     </span>
                                 </div>
 
-                                <div className="space-y-6">
+                                <div className="space-y-6 w-full">
                                     <input
                                         type="email"
                                         value={email}
@@ -116,31 +146,17 @@ export default function LandingPage() {
                                             setEmail(e.target.value)
                                         }
                                         placeholder="Type your email..."
-                                        className="w-full bg-white/10 border-gray-700 text-white placeholder:text-gray-400 w-full
-        rounded-md
-        border
-        border-gray-700
-        bg-white/10
-        px-3
-        py-2
-        text-sm
-        text-white
-        placeholder:text-gray-400
-        focus:outline-none
-        focus:ring-2
-        focus:ring-purple-500
-        focus:border-transparent
-        transition-colors"
+                                        className="input input-bordered w-full"
                                     />
 
-                                    <Button
-                                        className="w-full bg-teal-500 hover:bg-teal-600 text-white"
+                                    <button
+                                        className="w-full btn btn-secondary"
                                         onClick={handleEmailSubmit}
                                     >
                                         Create your AI model +
-                                    </Button>
+                                    </button>
 
-                                    <p className="text-center text-sm text-gray-400">
+                                    <p className="text-center text-sm text-neutral-content">
                                         You can login or sign up
                                     </p>
                                 </div>
