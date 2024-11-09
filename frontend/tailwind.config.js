@@ -1,7 +1,15 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-    darkMode: ["class"],
+const config = {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+    daisyui: {
+        themes: ["bumblebee", "dark", "cmyk", "cupcake"],
+        base: true,
+        styled: true,
+        utils: true,
+        prefix: "",
+        logs: true,
+        themeRoot: ":root",
+    },
     theme: {
         extend: {
             fontFamily: {
@@ -39,5 +47,11 @@ export default {
             },
         },
     },
-    plugins: [require("tailwindcss-animate")],
+    plugins: [
+        require("tailwindcss-animate"),
+        require("@tailwindcss/typography"),
+        require("daisyui"),
+    ],
 }
+
+export default config

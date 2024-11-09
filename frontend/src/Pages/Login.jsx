@@ -2,7 +2,7 @@ import { Account, Client } from "appwrite"
 import { motion } from "framer-motion"
 import { AlertCircle, Lock, Mail } from "lucide-react"
 import React, { useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 import { Alert, AlertDescription } from "@/Components/UI/alert"
 import { useUser } from "@/contexts/UserContext"
@@ -14,7 +14,8 @@ const fadeIn = {
     transition: { duration: 0.6 },
 }
 function Login() {
-    const { email: emailFromParams } = useParams()
+    const location = useLocation()
+    const { email: emailFromParams } = location.state || {}
 
     const [email, setEmail] = useState(emailFromParams)
     const [password, setPassword] = useState("")
@@ -58,7 +59,6 @@ function Login() {
             await login(email, password)
             navigate("/home")
         } catch (error) {
-            console.log(error)
             setErrorMessage(error.message || "Failed to login")
         }
     }
@@ -116,7 +116,7 @@ function Login() {
             <div className="w-full max-w-md space-y-8">
                 <div className="text-center">
                     <motion.h2
-                        className="text-3xl font-bold  mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-700 "
+                        className="text-3xl font-bold  mb-2 text-primary "
                         variants={fadeIn}
                     >
                         SnapStudio
