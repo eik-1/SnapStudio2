@@ -13,12 +13,12 @@ function InputOutputImage() {
                 <MoveRight
                     size={48}
                     strokeWidth={2.25}
-                    className="text-primary-content hidden lg:block"
+                    className="text-primary-content hidden sm:block"
                 />
                 <MoveDown
                     size={36}
                     strokeWidth={2.25}
-                    className="text-primary-content lg:hidden"
+                    className="text-primary-content sm:hidden"
                 />
                 <h1 className="text-3xl sm:text-4xl font-bold text-primary-content">
                     Write Your Prompt
