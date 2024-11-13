@@ -14,12 +14,12 @@ function Hero() {
 
     return (
         <div className="relative">
-            <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
+            <div className="mx-auto max-w-7xl px-4 py-24 sm:py-32 lg:px-8 lg:py-40">
                 <div className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-2">
                     <div>
                         <div className="flex items-center gap-4 mb-6">
                             {/* <Flame className="h-12 w-12 text-orange-500" /> */}
-                            <h1 className="text-6xl font-extrabold text-base-content">
+                            <h1 className="text-5xl lg:text-6xl font-extrabold text-base-content">
                                 Your{" "}
                                 <span className="text-secondary">
                                     AI Photographer
