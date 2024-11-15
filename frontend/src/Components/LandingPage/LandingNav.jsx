@@ -22,7 +22,10 @@ function LandingNav() {
     return (
         <nav className="flex items-center justify-between p-4 lg:px-8">
             <div className="flex items-center space-x-2">
-                <span className="text-2xl font-bold text-primary ">
+                <span
+                    className="text-2xl font-bold text-primary cursor-pointer"
+                    onClick={() => navigate("/")}
+                >
                     SnapSTUDIO
                 </span>
             </div>
