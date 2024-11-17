@@ -13,6 +13,7 @@ function Hero() {
                         <div className="flex items-center gap-4 mb-6">
                             {/* <Flame className="h-12 w-12 text-orange-500" /> */}
                             <h1 className="text-6xl font-extrabold text-secondary-content">
+
                                 Your{" "}
                                 <SparklesText
                                     className="text-secondary"
