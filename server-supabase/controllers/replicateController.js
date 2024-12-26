@@ -97,13 +97,13 @@ export async function getTrainingStatus(req, res) {
       );
     }
 
-    const modelId = model.model_id;
+    const modelId = model[0].model_id;
     const response = await replicate.trainings.get(modelId);
     if (response.status === "failed") {
-      await deleteModel(userId);
+      await deleteModel(modelId);
     }
     if (response.status === "succeeded") {
-      await updateModel(userId, response.status, response.output.version);
+      await updateModel(modelId, response.status, response.output.version);
     }
     return res.status(200).json(
       new ApiResponse(200, "Training status", {
@@ -129,18 +129,18 @@ export async function getTrainingStatus(req, res) {
 }
 
 export async function getTriggerWord(req, res) {
-  const { userId } = req.body;
+  const { userId, modelName } = req.body;
   try {
-    const model = await getModel(userId);
-    if (!model || !model.documents || model.documents.length === 0) {
+    const model = await getModel(userId, modelName);
+    if (!model || model.documents.length === 0) {
       return res.status(404).json(
         new ApiResponse(404, "Model not found", {
           error: "The requested model is not found.",
         })
       );
     }
-    const triggerWord = model.documents[0].trigger_word;
-    const modelName = model.documents[0].model_name;
+    const triggerWord = model[0].trigger_word;
+    const modelName = model[0].model_name;
     return res.status(200).json(
       new ApiResponse(200, "Trigger word", {
         triggerWord,

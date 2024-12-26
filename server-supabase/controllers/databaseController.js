@@ -17,57 +17,21 @@ export async function createModel(
   modelVersion
 ) {
   try {
-    // Check if the user already has a model
-    const { data: existingUser, error: fetchingError } = await supabase
+    const { data, error } = await supabase
       .from("Models")
-      .select("*")
-      .eq("user_id", userId)
-      .single();
-    if (fetchingError) {
-      throw fetchingError;
+      .insert({
+        model_name: modelName,
+        trigger_word: triggerWord,
+        status: status,
+        model_id: modelId,
+        model_version: modelVersion,
+        user_id: userId,
+      })
+      .select();
+    if (error) {
+      throw error;
     }
-
-    // If the user doesn't have a model, create a new one
-    if (!existingUser) {
-      const { data, error } = await supabase
-        .from("Models")
-        .insert({
-          model_name: [modelName],
-          trigger_word: [triggerWord],
-          status: [status],
-          model_id: [modelId],
-          model_version: [modelVersion],
-          user_id: userId,
-        })
-        .select();
-      if (error) {
-        throw error;
-      }
-      console.log("Model created: ", data);
-    }
-    // If the user already has a model, update the existing one
-    else {
-      const newModelName = [...existingModel.model_name, modelName];
-      const newTriggerWord = [...existingModel.trigger_word, triggerWord];
-      const newStatus = [...existingModel.status, status];
-      const newModelId = [...existingModel.model_id, modelId];
-      const newModelVersion = [...existingModel.model_version, modelVersion];
-
-      const { data: updatedModel, error: updateError } = await supabase
-        .from("Models")
-        .update({
-          model_name: newModelName,
-          trigger_word: newTriggerWord,
-          status: newStatus,
-          model_id: newModelId,
-          model_version: newModelVersion,
-        })
-        .eq("user_id", userId);
-      if (updateError) {
-        throw updateError;
-      }
-      console.log("Model created: ", updatedModel);
-    }
+    console.log("Model created: ", data);
   } catch (err) {
     console.log("Error creating model: ", err);
   }
@@ -78,57 +42,38 @@ export async function getModel(userId, modelName) {
     const { data, error } = await supabase
       .from("Models")
       .select("*")
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("model_name", modelName);
+
     if (error) {
       throw error;
     }
-    const i = 0;
-    for (i; i < data.model_name.length; i++) {
-      if (data.model_name[i] === modelName) {
-        break;
-      }
-    }
-    const response = {
-      model_name: data.model_name[i],
-      trigger_word: data.trigger_word[i],
-      status: data.status[i],
-      model_id: data.model_id[i],
-      model_version: data.model_version[i],
-    };
-    return response;
+    console.log("Models fetched: ", data);
+    return data;
   } catch (err) {
     throw err;
   }
 }
 
-export async function updateModel(userId, status, modelVersion) {
+export async function updateModel(modelId, status, modelVersion) {
   try {
-    const model = await getModel(userId);
-    const modelId = model.documents[0].$id;
-    const response = await databases.updateDocument(
-      process.env.APPWRITE_DATABASE_ID,
-      process.env.APPWRITE_MODELS_COLLECTION_ID,
-      modelId,
-      {
+    const { data, error } = await supabase
+      .from("Models")
+      .update({
         model_version: modelVersion,
         status: status,
-      }
-    );
-    return response;
+      })
+      .eq("model_id", modelId)
+      .select();
+    return data;
   } catch (err) {
     throw err;
   }
 }
 
-export async function deleteModel(userId) {
+export async function deleteModel(modelId) {
   try {
-    const model = await getModel(userId);
-    const modelId = model.documents[0].$id;
-    await databases.deleteDocument(
-      process.env.APPWRITE_DATABASE_ID,
-      process.env.APPWRITE_MODELS_COLLECTION_ID,
-      modelId
-    );
+    await supabase.from("Models").delete().eq("model_id", modelId);
   } catch (err) {
     throw err;
   }

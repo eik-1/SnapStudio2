@@ -1,6 +1,6 @@
 import express from "express";
 
-import { saveImage, getImages } from "../controllers/databaseController.js";
+import { getImages, saveImage } from "../controllers/databaseController.js";
 
 const router = express.Router();
 
