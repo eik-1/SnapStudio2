@@ -6,6 +6,7 @@ import Marquee from "@/Components/UI/marquee"
 export default function LandingPage() {
     return (
         <div className="min-h-screen">
+
             <Hero />
             <InputOutputImage />
         </div>

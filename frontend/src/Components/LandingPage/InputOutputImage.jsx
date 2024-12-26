@@ -1,36 +1,45 @@
-import { MoveRight } from "lucide-react"
-
+import { MoveRight, MoveDown } from "lucide-react"
 import HandDrawnArrow from "@/Components/UI/HandDrawnArrow"
 import { img1 as outputImage } from "@/assets/images"
 import { img1, img2, img3, img4 } from "@/assets/input-images"
 
 function InputOutputImage() {
     return (
-        <div className="flex flex-col items-center justify-start bg-primary h-fit pt-20">
-            <div className="flex flex-row items-center justify-center gap-4 mb-20">
-                <h1 className="text-4xl font-bold text-primary-content">
+        <div className="flex flex-col items-center justify-start bg-primary h-fit pt-20 mx-4 sm:mx-8 px-4 sm:px-16 rounded-xl">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                <h1 className="text-3xl sm:text-4xl font-bold text-primary-content">
                     Upload Your Images
                 </h1>
                 <MoveRight
                     size={48}
                     strokeWidth={2.25}
-                    className="text-primary-content"
+                    className="text-primary-content hidden sm:block"
                 />
-                <h1 className="text-4xl font-bold text-primary-content">
+                <MoveDown
+                    size={36}
+                    strokeWidth={2.25}
+                    className="text-primary-content sm:hidden"
+                />
+                <h1 className="text-3xl sm:text-4xl font-bold text-primary-content">
                     Write Your Prompt
                 </h1>
                 <MoveRight
                     size={48}
                     strokeWidth={2.25}
-                    className="text-primary-content"
+                    className="text-primary-content hidden lg:block"
                 />
-                <h1 className="text-4xl font-bold text-primary-content">
+                <MoveDown
+                    size={36}
+                    strokeWidth={2.25}
+                    className="text-primary-content lg:hidden"
+                />
+                <h1 className="text-3xl sm:text-4xl font-bold text-primary-content text-center">
                     Get AI Generated Images
                 </h1>
             </div>
 
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16 relative pb-20">
-                <div className="w-1/2 ">
+                <div className="w-full md:w-1/2 border-2">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="rounded-2xl overflow-hidden aspect-square">
                             <img
@@ -62,8 +71,9 @@ function InputOutputImage() {
                         </div>
                     </div>
                 </div>
-                <div className="rotate-[40deg]">
-                    <HandDrawnArrow />
+                <div className="rotate-[130deg] sm:rotate-[40deg]">
+                    <HandDrawnArrow height={128} className="hidden md:block" />
+                    <HandDrawnArrow height={64} className="md:hidden" />
                 </div>
                 <div className="w-full md:w-1/2">
                     <div className="relative rounded-2xl overflow-hidden aspect-auto">
